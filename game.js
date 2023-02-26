@@ -1,0 +1,151 @@
+var canvas = document.getElementById("canvas");
+/** @type {CanvasRenderingContext2D} */
+var context = canvas.getContext("2d");
+var bgcolor = "green";
+const SW = canvas.width;
+const SH = canvas.height;
+const TILE_W = 25;
+
+class Soldier{
+  constructor(pos,color,r,health,attack){
+    this.pos = pos;
+    this.color = color;
+    this.r = r;
+    this.health = health;
+    this.attack = attack;
+  
+    this.targets = [];
+    this.targets[0] = new Vector(startPos.x + pathData[0].x, startPos.y + pathData[0].y);
+    
+    console.log(this.targets[0]);
+
+    for (let i = 1; i < pathData.length; i++){
+      let prevTarget = this.targets[i - 1];
+      let path = pathData[i];
+
+      let newTarget = new Vector(prevTarget.x + path.x, prevTarget.y + path.y)
+      this.targets[i] = newTarget;
+      console.log(newTarget);
+    }
+    this.currentTarget = this.targets[0];
+    this.dir = new Vector(0,0);
+    this.speed = 4;
+    this.minTargetDist = 2; 
+  
+  }
+
+
+  render(){
+    context.fillStyle = this.color;
+    context.beginPath();
+    context.arc(this.pos.x, this.pos.y, this.r, 0, Math.PI*2);
+    context.fill();
+  }
+
+}
+
+class Vector{
+  constructor(x,y){
+    this.x = x;
+    this.y = y;
+  }
+}
+var startPos = new Vector(125,0);
+
+var pathData = [
+  new Vector(0, 200),
+  new Vector(550, 0),
+  new Vector(0, 200),
+  new Vector(-550, 0),
+  new Vector(0, 200),
+  
+]
+
+var soldier = new Soldier(startPos,"red",20,100,10);
+
+
+function update (){
+
+}
+
+function renderPath(){
+  let drawPos = new Vector(startPos.x, startPos.y);
+  context.fillStyle = "#873e23"
+
+  pathData.forEach(function(path) {
+    if(path.x == 0){
+      let x = drawPos.x - TILE_W;
+      let y = drawPos.y - TILE_W;
+      let w = TILE_W * 2;
+      let h = path.y + TILE_W * 2;
+
+      context.fillRect(x,y,w,h);
+
+    } 
+    
+    else if(path.x > 0) {
+      let x = drawPos.x - TILE_W;
+      let y = drawPos.y - TILE_W;
+      let w = path.x + TILE_W * 2;
+      let h = TILE_W * 2;
+
+      context.fillRect(x,y,w,h);
+
+    } else if(path.x < 0){
+      let x = drawPos.x - 25;
+      let y = drawPos.y - 25;
+      let w = path.x;
+      let h = TILE_W * 2;
+
+      context.fillRect(x,y,w,h)
+    }
+
+
+    drawPos.x += path.x;
+    drawPos.y += path.y;
+    
+  })
+}
+
+function renderGrid(){
+  context.fillStyle = "black";
+
+  let x = 0;
+  for (let i = 0; i < SW/TILE_W; i++) {
+    context.beginPath();
+    context.moveTo(x, 0);
+    context.lineTo(x, 600);
+    context.stroke();
+
+    x+= TILE_W;
+  }
+
+  y = 0;
+  for (let i = 0; i < SH/TILE_W; i++) {
+    context.beginPath();
+    context.moveTo(0, y);
+    context.lineTo(800, y);
+    context.stroke();
+
+    y+= TILE_W;
+    
+  }
+
+}
+
+function render (){
+  context.fillStyle = bgcolor;
+  context.fillRect(0,0,SW,SH)
+  
+  renderPath();
+  renderGrid();
+  
+}
+
+function play(){
+  update();
+  render();
+  
+  
+}
+setInterval(play, 1000/60);

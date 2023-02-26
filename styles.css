@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Inter:wght@700&display=swap');
+
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color:bisque;
+}
+
+h1{
+  text-align: center;
+  font-size: 100px;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  font-family: 'Bungee Spice';
+}
+
+canvas{
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
