@@ -5,7 +5,7 @@ var bgcolor = "green";
 const SW = canvas.width;
 const SH = canvas.height;
 const TILE_W = 25;
-
+var target = 1;
 class Soldier{
   constructor(pos,color,r,health,attack){
     this.pos = pos;
@@ -16,7 +16,7 @@ class Soldier{
   
     this.targets = [];
     this.targets[0] = new Vector(startPos.x + pathData[0].x, startPos.y + pathData[0].y);
-    
+      
     console.log(this.targets[0]);
 
     for (let i = 1; i < pathData.length; i++){
@@ -31,9 +31,45 @@ class Soldier{
     this.dir = new Vector(0,0);
     this.speed = 4;
     this.minTargetDist = 2; 
-  
+    
   }
 
+
+  
+  
+  update(){
+    if (this.currentTarget == null) return;
+
+    //calculates direction enemy has to go
+    let dir = new Vector(this.currentTarget.x - this.pos.x, this.currentTarget.y - this.pos.y)
+    //pythagoran theorum
+    let distance = (dir.x**2 + dir.y**2) ** (1/2)
+    
+    if(distance == 0) return;
+    dir.x /= distance;
+    dir.y /= distance;
+
+    this.pos.x += dir.x * this.speed;
+    this.pos.y += dir.y * this.speed;
+
+    let xDist = Math.abs(this.pos.x - this.currentTarget.x);
+    let yDist = Math.abs(this.pos.y - this.currentTarget.y);
+    
+    if(xDist <= this.minTargetDist && yDist <= this.minTargetDist){
+      
+      this.targets.splice(0,1);
+
+      if(this.targets.length == 0 ){
+        this.currentTarget == null;
+      }else {
+        this.currentTarget = this.targets[0];
+
+      }
+      
+      
+    }
+
+  }
 
   render(){
     context.fillStyle = this.color;
@@ -61,11 +97,23 @@ var pathData = [
   
 ]
 
-var soldier = new Soldier(startPos,"red",20,100,10);
+//var soldier = new Soldier(new Vector(startPos.x,startPos.y),"red",20,100,10);
+var soldiers = [];
+const NUM_SOLDIERS = 10;
 
+var soldierStart = new Vector(125, 0);
+
+for(let i = 0; i < NUM_SOLDIERS; i++){
+  let newSoldier = new Soldier(new Vector(soldierStart.x, soldierStart.y), "red", 20, 100, 10);
+  soldiers[i] = newSoldier;
+  
+  soldierStart.y -= 40;
+}
 
 function update (){
-
+  soldiers.forEach(function(s){
+    s.update();
+  });
 }
 
 function renderPath(){
@@ -139,8 +187,13 @@ function render (){
   
   renderPath();
   renderGrid();
-  
+
+  soldiers.forEach(function(s){
+    s.render();
+  });
 }
+  
+
 
 function play(){
   update();
