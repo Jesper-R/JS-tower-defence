@@ -6,7 +6,9 @@ const SW = canvas.width;
 const SH = canvas.height;
 const TILE_W = 25;
 var target = 1;
-class Soldier{
+var lives = 100;
+
+class Enemy{
   constructor(pos,color,r,health,attack){
     this.pos = pos;
     this.color = color;
@@ -17,7 +19,7 @@ class Soldier{
     this.targets = [];
     this.targets[0] = new Vector(startPos.x + pathData[0].x, startPos.y + pathData[0].y);
       
-    console.log(this.targets[0]);
+    //console.log(this.targets[0]);
 
     for (let i = 1; i < pathData.length; i++){
       let prevTarget = this.targets[i - 1];
@@ -25,7 +27,7 @@ class Soldier{
 
       let newTarget = new Vector(prevTarget.x + path.x, prevTarget.y + path.y)
       this.targets[i] = newTarget;
-      console.log(newTarget);
+      //console.log(newTarget);
     }
     this.currentTarget = this.targets[0];
     this.dir = new Vector(0,0);
@@ -34,15 +36,12 @@ class Soldier{
     
   }
 
-
-  
-  
   update(){
     if (this.currentTarget == null) return;
 
     //calculates direction enemy has to go
     let dir = new Vector(this.currentTarget.x - this.pos.x, this.currentTarget.y - this.pos.y)
-    //pythagoran theorum
+    //pythagorean theorum
     let distance = (dir.x**2 + dir.y**2) ** (1/2)
     
     if(distance == 0) return;
@@ -68,7 +67,17 @@ class Soldier{
       
       
     }
+    console.log(this.pos.x)
+    console.log(this.pos.y)
 
+    if(599 < this.pos.y){
+      console.log('delelete')
+      enemies.splice(0,1);
+      document.getElementById("lives").innerHTML = `Lives: ${lives-=10}`;
+      if (lives == 0){
+        document.getElementById("dead").style.display = "block";
+      }
+    }
   }
 
   render(){
@@ -76,6 +85,20 @@ class Soldier{
     context.beginPath();
     context.arc(this.pos.x, this.pos.y, this.r, 0, Math.PI*2);
     context.fill();
+  }
+
+}
+
+class Soldier {
+  constructor(pos, r, attack, range){
+    this.pos = pos;
+    this.r = r;
+    this.attack = attack;
+    this.range = range;
+  }
+
+  onPlace(){
+    console.log("start placing")
   }
 
 }
@@ -98,21 +121,21 @@ var pathData = [
 ]
 
 //var soldier = new Soldier(new Vector(startPos.x,startPos.y),"red",20,100,10);
-var soldiers = [];
-const NUM_SOLDIERS = 10;
+var enemies = [];
+const NUM_ENEMIES = 10;
 
-var soldierStart = new Vector(125, 0);
+var enemyStart = new Vector(125, 0);
 
-for(let i = 0; i < NUM_SOLDIERS; i++){
-  let newSoldier = new Soldier(new Vector(soldierStart.x, soldierStart.y), "red", 20, 100, 10);
-  soldiers[i] = newSoldier;
+for(let i = 0; i < NUM_ENEMIES; i++){
+  let newEnemy = new Enemy(new Vector(enemyStart.x, enemyStart.y), "red", 20, 100, 10);
+  enemies[i] = newEnemy;
   
-  soldierStart.y -= 40;
+  enemyStart.y -= 40;
 }
 
 function update (){
-  soldiers.forEach(function(s){
-    s.update();
+  enemies.forEach(function(e){
+    e.update();
   });
 }
 
@@ -188,7 +211,7 @@ function render (){
   renderPath();
   renderGrid();
 
-  soldiers.forEach(function(s){
+  enemies.forEach(function(s){
     s.render();
   });
 }

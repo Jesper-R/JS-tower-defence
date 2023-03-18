@@ -8,8 +8,32 @@
   
 </head>
 <body>
+  
   <h1>Tower Defence</h1>
-  <canvas id="canvas" width="800" height="600"></canvas>
+  
+  <div class="wrapper">
+    <div class="game-info">
+      <div id="lives">Lives: 100</div>
+      <div id="current-round">Round: 1</div>
+      <div class="gold">Gold: 100</div>
+    </div>
+  </div>
+    
+  
+    <canvas id="canvas" width="800" height="600"></canvas>
+  <div class="soldier-wrapper">
+    <button id="soldier" onclick="onPlace()">Soldier (50 g)</button>
+  </div>
+  
+  
+  <div id="dead">DEAD</div>
+  
+  
+
+  
+  
+  
+  
   <script src = "game.js"></script>
 </body>
 </html>

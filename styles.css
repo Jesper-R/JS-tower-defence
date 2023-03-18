@@ -4,22 +4,83 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  
 }
 
 body {
   background-color:bisque;
+  
 }
 
 h1{
   text-align: center;
   font-size: 100px;
-  padding-top: 40px;
-  padding-bottom: 40px;
+
   font-family: 'Bungee Spice';
 }
 
 canvas{
+  
+  display: block;
+ 
   margin-left: auto;
   margin-right: auto;
-  display: block;
+  
+}
+#lives, #current-round, .gold{
+  font-family: 'Bungee Spice';
+  font-size: 40px;
+}
+
+#current-round {
+  /*position: absolute;
+  right: 0;*/
+}
+
+#dead{
+  
+  position: absolute;
+  
+  text-align: center;
+  width: 100vw;
+  height: 300px;
+  top: 310px;
+  display: none;
+
+  font-family: 'Bungee Spice';
+  font-size: 200px;
+}
+.wrapper {
+  display: grid;
+  place-items: center;
+}
+
+
+.game-info{
+  display: inline-flex;
+  
+  width: 800px;
+
+  
+  justify-content:space-between;
+}
+
+
+.soldier-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+#soldier {
+ height: 60px; 
+ width: 200px;
+ border-radius: 10px;
+ background-color: orangered;
+ font-weight: bold;
+ font-size: 20px;
+}
+
+#soldier:hover {
+  background-color: brown;
 }
