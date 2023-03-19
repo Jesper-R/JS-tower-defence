@@ -8,7 +8,7 @@
 }
 
 body {
-  background-color:bisque;
+  background-color:rgb(31, 31, 31);
   
 }
 
@@ -22,9 +22,8 @@ h1{
 canvas{
   
   display: block;
- 
-  margin-left: auto;
-  margin-right: auto;
+  
+
   
 }
 #lives, #current-round, .gold{
@@ -51,28 +50,37 @@ canvas{
   font-size: 200px;
 }
 .wrapper {
-  display: grid;
-  place-items: center;
+  display: flex;
+  justify-content: center;
 }
 
 
 .game-info{
-  display: inline-flex;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
   
-  width: 800px;
+  gap: 30px;
+  
 
+}
+.game-info div{
+  margin-left: 20px;
   
-  justify-content:space-between;
+  
+
 }
 
-
+.placeholder {
+  width: 300px;
+}
 .soldier-wrapper {
   display: flex;
   justify-content: center;
   margin-top: 20px;
 }
 
-#soldier {
+#soldier-button {
  height: 60px; 
  width: 200px;
  border-radius: 10px;
@@ -81,6 +89,6 @@ canvas{
  font-size: 20px;
 }
 
-#soldier:hover {
+#soldier-button:hover {
   background-color: brown;
 }

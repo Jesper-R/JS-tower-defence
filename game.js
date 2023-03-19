@@ -4,9 +4,17 @@ var context = canvas.getContext("2d");
 var bgcolor = "green";
 const SW = canvas.width;
 const SH = canvas.height;
+const SOLDIER_BUTTON = document.getElementById('soldier-button');
 const TILE_W = 25;
 var target = 1;
 var lives = 100;
+
+
+var towerImage = new Image();
+//towerImage.onload = function () {
+ // context.drawImage(towerImage,40, 50)
+//}
+//towerImage.src = "https://www.pngall.com/wp-content/uploads/5/Tower-PNG-Image.png"
 
 class Enemy{
   constructor(pos,color,r,health,attack){
@@ -67,11 +75,11 @@ class Enemy{
       
       
     }
-    console.log(this.pos.x)
-    console.log(this.pos.y)
+    //console.log(this.pos.x)
+    //console.log(this.pos.y)
 
     if(599 < this.pos.y){
-      console.log('delelete')
+      //console.log('delelete')
       enemies.splice(0,1);
       document.getElementById("lives").innerHTML = `Lives: ${lives-=10}`;
       if (lives == 0){
@@ -88,20 +96,172 @@ class Enemy{
   }
 
 }
+var placing = true;
+var selectedTower = null;
+SOLDIER_BUTTON.addEventListener('click', function(event) {
+  console.log("start placing")
+  placing = true;
+  var newTower = new Soldier(event.clientX, event.clientY, 10, 10, 100);
+  towers.push(newTower)
+  selectedTower = newTower;
+
+});
+canvas.addEventListener("mousemove", function(event) {
+  // Check if the user has selected a tower to place
+  if (placing) {
+    // Update the position of the selected tower to follow the user's mouse pointer
+    selectedTower.x = event.clientX - canvas.getBoundingClientRect().left;
+    selectedTower.y = event.clientY - canvas.getBoundingClientRect().top;
+  }
+});
+canvas.addEventListener('click', handleClick, true);
+
+function handleClick() {
+  isTowerOnPath(selectedTower);
+  
+}
+function isTowerOnPath(tower) {
+  /*
+  if ( 100 < tower.x && tower.x < 150){
+    var xpl = true
+  }
+  if ( 0 < tower.y && tower.y < 225){
+    var ypl = true
+  }
+
+  if ( 100 < tower.x && tower.x < 700){
+    var xpl1 = true
+  }
+  if ( 175 < tower.y && tower.y < 225){
+    var ypl1 = true
+  }
+
+  if ( 650 < tower.x && tower.x < 700){
+    var xpl2 = true
+  }
+  if ( 175 < tower.y && tower.y < 425){
+    var ypl2 = true
+  }
+ 
+  if ( 100 < tower.x && tower.x < 700){
+    var xpl3 = true
+  }
+  if ( 375 < tower.y && tower.y < 425){
+    var ypl3 = true
+  }
+
+  if ( 100 < tower.x && tower.x < 150){
+    var xpl4 = true
+  }
+  if ( 325 < tower.y && tower.y < 600){
+    var ypl4 = true
+  }
+
+
+  if (xpl && ypl) {
+    console.log("cant place")
+    
+  } else if (xpl1 && ypl1) {
+    console.log("cant place")
+    
+  } else if (xpl2 && ypl2) {
+    console.log("cant place")
+  }else if (xpl3 && ypl3) {
+    console.log("cant place")
+  }else if (xpl4 && ypl4) {
+    console.log("cant place")
+  }
+  else {
+    placing = false;
+  }*/
+
+  //TODO: shorten and rewrite positions with pathdata instead fix 
+  // you can place on path on one spot fix that
+  const positions = [
+    { x: 100, y: 0, width: 50, height: 225 },
+    { x: 100, y: 375, width: 600, height: 50 },
+    { x: 650, y: 175, width: 50, height: 250 },
+    { x: 100, y: 325, width: 50, height: 275 },
+    { x: 0, y: 225, width: 100, height: 200 },
+  ];
+  
+  const overlaps = positions.some((pos) => {
+    return (
+      pos.x < tower.x && tower.x < pos.x + pos.width &&
+      pos.y < tower.y && tower.y < pos.y + pos.height
+    );
+  });
+  
+  if (overlaps) {
+    console.log("cant place");
+  } else {
+    placing = false;
+  }
+  
+  
+
+  // Check if the tower's position is within a certain distance from any point on the path
+  //for (var i = 0; i < pathData.length; i++) {
+    //console.log(pathData[i].x)
+    //console.log(pathData[i].y)
+    //console.log(tower.x)
+    
+    
+    
+    //if (tower.x - pathData[i].x )
+    
+
+    //var distancex = tower.x - (pathData[i].x + startPos.x)
+    //var distancey = tower.y - (pathData[i].y + startPos.y)
+
+    /*if (distancex < 75 && distancey < 75) { // Set the distance threshold as needed
+      console.log("TOO CLOSE")
+      console.log("x diff")
+      console.log(tower.x - (pathData[i].x + startPos.x))
+      console.log("\n y diff")
+      console.log(tower.y - (pathData[i].y + startPos.y))
+      //console.log(distance)
+      //return true;
+    } else {
+      console.log("GO AHEAD")
+      console.log("x diff")
+      console.log(tower.x - (pathData[i].x + startPos.x))
+      console.log("\n y diff")
+      console.log(tower.y - (pathData[i].y + startPos.y))
+    }
+  }
+  //console.log("false")
+  
+  //return false;
+  */
+}
+
+function drawSelectedTower() {
+  if (placing) {
+    // Draw the tower image at the selected tower's x and y position
+    //context.drawImage(towerImage, selectedTower.x, selectedTower.y);
+    context.fillStyle = "purple";
+    context.beginPath();
+    context.arc(selectedTower.x, selectedTower.y, 10, 0, Math.PI*2);
+    context.fill();
+  }
+}
 
 class Soldier {
-  constructor(pos, r, attack, range){
-    this.pos = pos;
+  constructor(x, y, r, attack, range){
+    this.x = x;
+    this.y = y;
     this.r = r;
     this.attack = attack;
     this.range = range;
   }
 
-  onPlace(){
-    console.log("start placing")
-  }
-
 }
+
+var towers = []
+
+
+//-----------------------------------
 
 class Vector{
   constructor(x,y){
@@ -214,6 +374,19 @@ function render (){
   enemies.forEach(function(s){
     s.render();
   });
+
+  // Draw your towers
+  for (var i = 0; i < towers.length; i++) {
+    // Draw the tower image at the tower's x and y position
+    //context.drawImage(towerImage, towers[i].x, towers[i].y);
+    context.fillStyle = "purple";
+    context.beginPath();
+    context.arc(towers[i].x, towers[i].y, 10, 0, Math.PI*2);
+    context.fill();
+  }
+  
+  // Draw the selected tower
+  drawSelectedTower();
 }
   
 
