@@ -8,6 +8,12 @@ const SOLDIER_BUTTON = document.getElementById('soldier-button');
 const TILE_W = 25;
 var target = 1;
 var lives = 100;
+var gold = 100;
+var balloon_img = new Image();
+var monkey_img = new Image();
+monkey_img.src = "monkey-removebg-preview.png"
+balloon_img.src = "http://topper64.co.uk/nk/btd6/img/bloons/red.png"
+
 
 
 var towerImage = new Image();
@@ -39,7 +45,7 @@ class Enemy{
     }
     this.currentTarget = this.targets[0];
     this.dir = new Vector(0,0);
-    this.speed = 4;
+    this.speed = 2;
     this.minTargetDist = 2; 
     
   }
@@ -89,21 +95,25 @@ class Enemy{
   }
 
   render(){
-    context.fillStyle = this.color;
+    /*context.fillStyle = this.color;
     context.beginPath();
     context.arc(this.pos.x, this.pos.y, this.r, 0, Math.PI*2);
-    context.fill();
+    context.fill();*/
+    context.drawImage(balloon_img, this.pos.x - 64, this.pos.y - 64, 128, 128)
   }
 
 }
 var placing = true;
 var selectedTower = null;
 SOLDIER_BUTTON.addEventListener('click', function(event) {
-  console.log("start placing")
-  placing = true;
-  var newTower = new Soldier(event.clientX, event.clientY, 10, 10, 100);
-  towers.push(newTower)
-  selectedTower = newTower;
+  if(gold >= 50 ){
+    console.log("start placing")
+    placing = true;
+    var newTower = new Soldier(event.clientX, event.clientY, 20, 10, 100);
+    towers.push(newTower)
+    selectedTower = newTower;
+  }
+  
 
 });
 canvas.addEventListener("mousemove", function(event) {
@@ -117,7 +127,10 @@ canvas.addEventListener("mousemove", function(event) {
 canvas.addEventListener('click', handleClick, true);
 
 function handleClick() {
-  isTowerOnPath(selectedTower);
+  if(placing){
+    isTowerOnPath(selectedTower);
+  }
+  
   
 }
 function isTowerOnPath(tower) {
@@ -179,10 +192,11 @@ function isTowerOnPath(tower) {
   // you can place on path on one spot fix that
   const positions = [
     { x: 100, y: 0, width: 50, height: 225 },
+    { x: 100, y: 175, width: 600, height: 50 },
     { x: 100, y: 375, width: 600, height: 50 },
     { x: 650, y: 175, width: 50, height: 250 },
     { x: 100, y: 325, width: 50, height: 275 },
-    { x: 0, y: 225, width: 100, height: 200 },
+    //{ x: 0, y: 225, width: 100, height: 200 },
   ];
   
   const overlaps = positions.some((pos) => {
@@ -196,6 +210,7 @@ function isTowerOnPath(tower) {
     console.log("cant place");
   } else {
     placing = false;
+    document.getElementById("gold").innerHTML = `Gold: ${gold -= 50}`;
   }
   
   
@@ -240,10 +255,11 @@ function drawSelectedTower() {
   if (placing) {
     // Draw the tower image at the selected tower's x and y position
     //context.drawImage(towerImage, selectedTower.x, selectedTower.y);
-    context.fillStyle = "purple";
+    /*context.fillStyle = "purple";
     context.beginPath();
-    context.arc(selectedTower.x, selectedTower.y, 10, 0, Math.PI*2);
-    context.fill();
+    context.arc(selectedTower.x, selectedTower.y, selectedTower.r, 0, Math.PI*2);
+    context.fill();*/
+    context.drawImage(monkey_img, selectedTower.x -32, selectedTower.y-32, 64, 64)
   }
 }
 
@@ -379,10 +395,21 @@ function render (){
   for (var i = 0; i < towers.length; i++) {
     // Draw the tower image at the tower's x and y position
     //context.drawImage(towerImage, towers[i].x, towers[i].y);
+    /*
     context.fillStyle = "purple";
     context.beginPath();
-    context.arc(towers[i].x, towers[i].y, 10, 0, Math.PI*2);
+    context.arc(towers[i].x, towers[i].y, towers[i].r, 0, Math.PI*2);
     context.fill();
+    */
+    context.fillStyle = "black";
+    context.beginPath();
+    
+    context.arc(towers[i].x, towers[i].y, towers[i].range, 0, Math.PI*2);
+    context.lineWidth = 2;
+    context.stroke();
+    context.lineWidth = 1;
+    
+   context.drawImage(monkey_img, towers[i].x -32, towers[i].y-32, 64, 64)
   }
   
   // Draw the selected tower
