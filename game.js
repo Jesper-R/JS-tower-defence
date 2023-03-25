@@ -7,7 +7,7 @@ const SH = canvas.height;
 const SOLDIER_BUTTON = document.getElementById('soldier-button');
 const TILE_W = 25;
 var target = 1;
-var lives = 100;
+var hp = 100;
 var gold = 100;
 var balloon_img = new Image();
 var monkey_img = new Image();
@@ -80,8 +80,8 @@ class Enemy{
     if(599 < this.pos.y){
       //console.log('delelete')
       enemies.splice(0,1);
-      document.getElementById("lives").innerHTML = `Lives: ${lives-=10}`;
-      if (lives == 0){
+      document.getElementById("lives").innerHTML = `HP: ${hp-=10}`;
+      if (hp == 0){
         document.getElementById("dead").style.display = "block";
       }
     }
