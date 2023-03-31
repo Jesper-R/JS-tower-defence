@@ -5,14 +5,17 @@ var bgcolor = "green";
 const SW = canvas.width;
 const SH = canvas.height;
 const SOLDIER_BUTTON = document.getElementById('soldier-button');
+const TEST_BUTTON = document.getElementById('test-button');
 const TILE_W = 25;
 var target = 1;
 var hp = 100;
 var gold = 100;
 var balloon_img = new Image();
 var monkey_img = new Image();
+var bullet_img = new Image();
 monkey_img.src = "monkey-removebg-preview.png"
 balloon_img.src = "http://topper64.co.uk/nk/btd6/img/bloons/red.png"
+bullet_img.src = "stone.png"
 
 
 class Enemy{
@@ -22,6 +25,8 @@ class Enemy{
     this.r = r;
     this.health = health;
     this.attack = attack;
+    this.x;
+    this.y;
   
     this.targets = [];
     this.targets[0] = new Vector(startPos.x + pathData[0].x, startPos.y + pathData[0].y);
@@ -89,6 +94,7 @@ class Enemy{
 
   render(){
     context.drawImage(balloon_img, this.pos.x - 64, this.pos.y - 64, 128, 128)
+    
   }
 
 }
@@ -107,6 +113,8 @@ SOLDIER_BUTTON.addEventListener('click', function(event) {
   
 
 });
+
+
 canvas.addEventListener("mousemove", function(event) {
   // Check if the user has selected a tower to place
   if (placing) {
@@ -173,14 +181,89 @@ class Soldier {
     this.attack = attack;
     this.range = range;
     this.rcolor = rcolor;
+    this.target = null;
+    this.fireCooldown = 0;
+  }
+  
+  update() {
+    // Find the closest enemy within range
+    let closestDist = Infinity;
+    let closestEnemy = null;
+    
+    for (let enemy of enemies) {
+      let dist = Math.sqrt((enemy.pos.x - this.x) ** 2 + (enemy.pos.y - this.y) ** 2);
+      if (dist < this.range && dist < closestDist) {
+        closestDist = dist;
+        closestEnemy = enemy;
+      }
+    }
+
+    // Set the tower's target to the closest enemy within range
+    this.target = closestEnemy;
+
+    // Fire a bullet at the target if the tower is not on cooldown
+    if (this.target && this.fireCooldown === 0) {
+      let direction = calculateDirection(this, enemies[0]);
+      console.log(direction)
+      var newBullet = new Bullet(this.x, this.y, 6, 1, direction);
+      console.log(newBullet)
+      bullets.push(newBullet);
+      enemies.splice(0, 1)
+      this.fireCooldown = 60; // 60 frames between shots
+    }
+
+    // Update the fire cooldown
+    if (this.fireCooldown > 0) {
+      this.fireCooldown--;
+    }
   }
 
+  draw() {
+    
+    
+  }
+}
+  
+
+// -----------------------------------
+
+
+class Bullet {
+  constructor(x, y, speed, damage, direction) {
+    this.x = x;
+    this.y = y;
+    this.speed = speed;
+    this.damage = damage;
+    this.direction = direction;
+  }
+
+  move() {
+    this.x += this.speed * this.direction.x;
+    this.y += this.speed * this.direction.y;
+  }
 }
 
-var towers = []
+function calculateDirection(tower, enemy) {
+  // Calculate the vector from the tower to the enemy
+  let dx = enemy.pos.x - tower.x;
+  let dy = enemy.pos.y - tower.y;
+
+  // Normalize the vector to get a unit vector
+  let length = Math.sqrt(dx*dx + dy*dy);
+  let direction = {
+    x: dx / length,
+    y: dy / length
+  };
+
+  return direction;
+}
 
 
 //-----------------------------------
+var towers = []
+
+
+
 
 class Vector{
   constructor(x,y){
@@ -217,6 +300,11 @@ function update (){
     e.update();
   });
 }
+/*function updateS () {
+  towers.forEach(function(s){
+    s.update();
+  });
+}*/
 
 function renderPath(){
   let drawPos = new Vector(startPos.x, startPos.y);
@@ -294,6 +382,10 @@ function render (){
     s.render();
   });
 
+  /*towers.forEach(function(v) {
+    v.draw();
+  })*/
+
   // Draw your towers
   for (var i = 0; i < towers.length; i++) {
 
@@ -311,11 +403,147 @@ function render (){
   // Draw the selected tower
   drawSelectedTower();
 }
+
+TEST_BUTTON.addEventListener('click', function(event) { 
   
+  
+  
+  
+  //console.log(enemies);
+  //console.log(enemies[0].pos.x)
+  //console.log("tx"+towers[0].x)
+  //console.log("ex"+enemies[7].x + "length" + enemies.length)
+});
+var test = 0;
+function renderBullets() {
+  
+  
+  //if(test == 5) {return}
+  //shoot()
+}
+function shoot() {
+  /*for (let i = 0; i < towers.length; i++){
+    
+    console.log("created bullets: " + bullets.length)
+    var direction = calculateDirection(towers[i], enemies[0]);
+    var newBullet = new Bullet(towers[i].x, towers[i].y, 10, 2, direction);
+    bullets.push(newBullet);   
+    context.drawImage(bullet_img, newBullet.x - 16, newBullet.y - 16, 32, 32)
+    bullets.move()
+
+    for (let e = enemies.length - 1; e>= 0; e--) {
+         
 
 
+      
+      let enemy = enemies[e];
+      let dist = Math.sqrt((newBullet.x - enemy.pos.x) ** 2 + (newBullet.y - enemy.pos.y) ** 2);
+      console.log("3amount of bullets: " + bullets.length)
+      if (dist < 50) { // collision detection with a 10-pixel radius around the enemy
+        //enemy.health -= bullet.damage;
+        bullets.splice(0, 1);
+        enemies.splice(e, 1)
+        break;
+      }
+      break;
+    }
+    /*for (let s = bullets.length - 1; s >= 0; s--) {
+      console.log("1amount of bullets: " + bullets.length)
+      let bullet = bullets[s];
+      bullet.move();
+      context.drawImage(bullet_img, bullets[s].x - 16, bullets[s].y - 16, 32, 32)
+      console.log("2amount of bullets: " + bullets.length)
+      // Check for collisions with enemies
+      for (let j = enemies.length - 1; j >= 0; j--) {
+        let enemy = enemies[j];
+        let dist = Math.sqrt((bullet.x - enemy.pos.x) ** 2 + (bullet.y - enemy.pos.y) ** 2);
+        console.log("3amount of bullets: " + bullets.length)
+        if (dist < 50) { // collision detection with a 10-pixel radius around the enemy
+          //enemy.health -= bullet.damage;
+          bullets.splice(s, 1);
+          enemies.splice(j, 1)
+         break; // break out of the inner loop, since a bullet can only hit one enemy
+        }
+        console.log("4amount of bullets: " + bullets.length)
+      }
+      if(towers[i].fireCooldown > 0) {
+        towers[i].fireCooldown--
+      }
+    }
+    
+  }
+  */
+}
+setInterval(shoot, 5000);
+
+setInterval(renderBullets, 1000/60);
+var bullets = []
+shooting = true;
 function play(){
   update();
+  //updateS();
   render();
+  renderBullets();
+  towers.forEach(function(e){
+    e.update()
+    e.draw()
+  })
+  bullets.forEach(function(b){
+    b.move()
+  })
+  console.log(bullets.length)
+  for(let i = 0; i < bullets.length; i++) {
+    context.drawImage(bullet_img, bullets[i].x - 16, bullets[i].y - 16, 32, 32)
+    bullets[i].move()
+  }
+  
+  //for(let i = 0; i < bullets.length; i++) {
+  //  bullets[i].move()
+  //}
+  //direction = calculateDirection(towers[0], enemies[0]);
+  
+  if (!placing){
+    /*if(towers[0].fireCooldown == 0) {
+      var direction = calculateDirection(towers[0], enemies[0]);
+      var newBullet = new Bullet(towers[0].x, towers[0].y, 10, 2, direction);
+      bullets.push(newBullet);
+      towers[0].fireCooldown = 60;
+    }*/
+  
+    /*for(let i = 0; i<bullets.length; i++){
+      bullets[i].direction = direction;
+      bullets[i].move()
+      context.drawImage(bullet_img, bullets[i].x - 16, bullets[i].y - 16, 32, 32)
+    }*/
+    
+    
+    
+    
+    
+    
+  }
+  
+  //bullets[0].move();
+  //console.log("x" + bullets[0].x + "y" + bullets[0].y)
+  //console.log(bullets[0])
+  
+
+  //towers[0].update(enemies, bullets);
+  //for (let i = bullets.length - 1; i >= 0; i--) {
+  //  let bullet = bullets[i];
+  //  bullet.move();}
+  //console.log(towers[0].x + "--" + towers[0].y)
+  /*
+  let enemy = enemies[0];
+  let direction = calculateDirection(towers[0], enemy);
+  let newBullet = new Bullet(towers[0].x, towers[0].y, 2, 2, direction);
+  bullets.push(newBullet);
+  
+  for (var i = 0; i < bullets.length; i++) {
+    bullets[i].move();
+    console.log("bullet move ffs" + bullets.length)
+  }*/
+  
 }
+
 setInterval(play, 1000/60);
