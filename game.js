@@ -16,7 +16,7 @@ var bullet_img = new Image();
 monkey_img.src = "monkey-removebg-preview.png"
 balloon_img.src = "http://topper64.co.uk/nk/btd6/img/bloons/red.png"
 bullet_img.src = "stone.png"
-
+var placing = true;
 
 class Enemy{
   constructor(pos,color,r,health,attack){
@@ -98,11 +98,11 @@ class Enemy{
   }
 
 }
-var placing = true;
+
 var selectedTower = null;
 SOLDIER_BUTTON.addEventListener('click', function(event) {
   if(gold >= 50 ){
-    console.log("start placing")
+    //console.log("start placing")
     gold -= 50;
     document.getElementById("gold").innerHTML = `Gold: ${gold}`;
     placing = true;
@@ -130,6 +130,7 @@ function handleClick() {
   if(placing){
     if(!isTowerOnPath(selectedTower)){
       placing = false;
+      selectedTower.isPlaced = true;
     }
   }
   
@@ -155,7 +156,7 @@ function isTowerOnPath(tower) {
   });
   
   if (overlaps) {
-    console.log("cant place");
+    //console.log("cant place");
     selectedTower.rcolor = "red"
     return true
   } else {
@@ -169,6 +170,7 @@ function isTowerOnPath(tower) {
 
 function drawSelectedTower() {
   if (placing) {
+    Soldier.placing = true;
     context.drawImage(monkey_img, selectedTower.x -32, selectedTower.y-32, 64, 64)
   }
 }
@@ -183,7 +185,10 @@ class Soldier {
     this.rcolor = rcolor;
     this.target = null;
     this.fireCooldown = 0;
+    this.isPlaced = false;
+    
   }
+  
   
   update() {
     // Find the closest enemy within range
@@ -204,9 +209,9 @@ class Soldier {
     // Fire a bullet at the target if the tower is not on cooldown
     if (this.target && this.fireCooldown === 0) {
       let direction = calculateDirection(this, enemies[0]);
-      console.log(direction)
+      //console.log(direction)
       var newBullet = new Bullet(this.x, this.y, 6, 1, direction);
-      console.log(newBullet)
+      //console.log(newBullet)
       bullets.push(newBullet);
       enemies.splice(0, 1)
       this.fireCooldown = 60; // 60 frames between shots
@@ -216,14 +221,70 @@ class Soldier {
     if (this.fireCooldown > 0) {
       this.fireCooldown--;
     }
+    
+    if (enemies[0]) {
+      // Rotate the tower towards the enemy
+      //this.rotateTowardsEnemy(enemies[0]);
+  
+      // Fire a bullet at the enemy
+      //this.fireBullet(enemy, bullets);
+    }
+    
+    
+    
   }
 
   draw() {
-    
+    context.drawImage(monkey_img, this.x - 32, this.y - 32, 64, 64)
     
   }
-}
   
+  rotateTowardsEnemy(enemy) {
+    console.log("1")
+    // Calculate the vector from the tower to the enemy
+    let dx = enemy.pos.x - this.x;
+    let dy = enemy.pos.y - this.y;
+    console.log("2")
+    // Calculate the angle between the tower and the enemy
+    let angle = Math.atan2(dy, dx);
+    console.log("3")
+    context.save()
+    // Set the origin point to the center of the tower
+    context.translate(this.x, this.y);
+  
+    // Rotate the tower towards the enemy
+    context.rotate(angle + Math.PI / 2);
+    context.drawImage(monkey_img, -32, -32, 64, 64)
+    // Reset the origin point to the top-left corner of the tower
+  
+    //context.translate(-this.x, -this.y);
+  
+  
+    context.restore()
+  }
+  rotateTowardsPoint(x, y){
+    let dx = x - this.x;
+    let dy = y - this.y;
+    console.log("2")
+    // Calculate the angle between the tower and the enemy
+    let angle = Math.atan2(dy, dx);
+    console.log("3")
+    context.save()
+    // Set the origin point to the center of the tower
+    context.translate(this.x, this.y);
+  
+    // Rotate the tower towards the enemy
+    context.rotate(angle + Math.PI / 2);
+    context.drawImage(monkey_img, -32, -32, 64, 64)
+    // Reset the origin point to the top-left corner of the tower
+  
+    //context.translate(-this.x, -this.y);
+  
+  
+    context.restore()
+  }
+}
+
 
 // -----------------------------------
 
@@ -245,14 +306,14 @@ class Bullet {
 
 function calculateDirection(tower, enemy) {
   // Calculate the vector from the tower to the enemy
-  let dx = enemy.pos.x - tower.x;
-  let dy = enemy.pos.y - tower.y;
-
+  let dx1 = enemy.pos.x - tower.x;
+  let dy1 = enemy.pos.y - tower.y;
+  console.log("dx:", dx1, "dy:", dy1);
   // Normalize the vector to get a unit vector
-  let length = Math.sqrt(dx*dx + dy*dy);
+  let length = Math.sqrt(dx1*dx1 + dy1*dy1);
   let direction = {
-    x: dx / length,
-    y: dy / length
+    x: dx1 / length,
+    y: dy1 / length
   };
 
   return direction;
@@ -397,7 +458,7 @@ function render (){
     context.lineWidth = 1;
     context.strokeStyle ="black";
     
-   context.drawImage(monkey_img, towers[i].x -32, towers[i].y-32, 64, 64)
+   //context.drawImage(monkey_img, towers[i].x -32, towers[i].y-32, 64, 64)
   }
   
   // Draw the selected tower
@@ -485,13 +546,27 @@ function play(){
   render();
   renderBullets();
   towers.forEach(function(e){
-    e.update()
-    e.draw()
+    if(!enemies[0]){
+      console.log("rotate to point")
+      e.rotateTowardsPoint(startPos.x, startPos.y)
+    }
+    if(enemies[0]){
+      e.update()
+      if(e.isPlaced){
+        //console.log("pre rotate")
+        e.rotateTowardsEnemy(enemies[0])
+        //console.log("rotate")
+      }
+    }
+    
+    //e.draw()
+    
+    
   })
   bullets.forEach(function(b){
     b.move()
   })
-  console.log(bullets.length)
+  //console.log(bullets.length + "bullet length")
   for(let i = 0; i < bullets.length; i++) {
     context.drawImage(bullet_img, bullets[i].x - 16, bullets[i].y - 16, 32, 32)
     bullets[i].move()
