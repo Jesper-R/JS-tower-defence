@@ -9,14 +9,21 @@ const TEST_BUTTON = document.getElementById('test-button');
 const TILE_W = 25;
 var target = 1;
 var hp = 100;
-var gold = 100;
+var gold = 200;
 var balloon_img = new Image();
 var monkey_img = new Image();
 var bullet_img = new Image();
+var catapult_img = new Image();
+var catapult_projectile_img = new Image();
 monkey_img.src = "monkey-removebg-preview.png"
 balloon_img.src = "http://topper64.co.uk/nk/btd6/img/bloons/red.png"
-bullet_img.src = "stone.png"
+bullet_img.src = "output-onlinepngtools.png"
+catapult_img.src = "catapult-fixed.png"
+catapult_projectile_img.src = "spike.svg"
 var placing = true;
+var musicStart = true;
+const swingAudio = document.getElementById("swing-audio");
+const popAudio = document.getElementById("pop-audio");
 
 class Enemy{
   constructor(pos,color,r,health,attack){
@@ -101,12 +108,14 @@ class Enemy{
 
 var selectedTower = null;
 SOLDIER_BUTTON.addEventListener('click', function(event) {
+  
   if(gold >= 50 ){
     //console.log("start placing")
     gold -= 50;
     document.getElementById("gold").innerHTML = `Gold: ${gold}`;
-    placing = true;
-    var newTower = new Soldier(event.clientX, event.clientY, 20, 10, 100);
+    Soldier.placing = true;
+    document.getElementById("canvas").style.cursor = "move"; 
+    var newTower = new Soldier(event.clientX, event.clientY, 20, 10, 100, monkey_img);
     towers.push(newTower)
     selectedTower = newTower;
   }
@@ -117,7 +126,7 @@ SOLDIER_BUTTON.addEventListener('click', function(event) {
 
 canvas.addEventListener("mousemove", function(event) {
   // Check if the user has selected a tower to place
-  if (placing) {
+  if (Soldier.placing || CatapultMonkey.placing) {
     // Update the position of the selected tower to follow the user's mouse pointer
     selectedTower.x = event.clientX - canvas.getBoundingClientRect().left;
     selectedTower.y = event.clientY - canvas.getBoundingClientRect().top;
@@ -127,13 +136,20 @@ canvas.addEventListener("mousemove", function(event) {
 canvas.addEventListener('click', handleClick, true);
 
 function handleClick() {
-  if(placing){
+  if(Soldier.placing){
     if(!isTowerOnPath(selectedTower)){
-      placing = false;
+      Soldier.placing = false;
       selectedTower.isPlaced = true;
+      document.getElementById("canvas").style.cursor = "default"; 
     }
   }
-  
+  if(CatapultMonkey.placing){
+    if(!isTowerOnPath(selectedTower)){
+      CatapultMonkey.placing = false;
+      selectedTower.isPlaced = true;
+      document.getElementById("canvas").style.cursor = "default"; 
+    }
+  }
   
 }
 function isTowerOnPath(tower) {
@@ -169,51 +185,71 @@ function isTowerOnPath(tower) {
 }
 
 function drawSelectedTower() {
-  if (placing) {
+  if (Soldier.placing) {
     Soldier.placing = true;
     context.drawImage(monkey_img, selectedTower.x -32, selectedTower.y-32, 64, 64)
   }
 }
 
-class Soldier {
-  constructor(x, y, r, attack, range, rcolor){
-    this.x = x;
-    this.y = y;
-    this.r = r;
-    this.attack = attack;
-    this.range = range;
-    this.rcolor = rcolor;
-    this.target = null;
-    this.fireCooldown = 0;
-    this.isPlaced = false;
-    
+function drawCatapultMonkeys() {
+  if(CatapultMonkey.placing){
+    CatapultMonkey.placing = true;
+    context.drawImage(catapult_img, selectedTower.x -50, selectedTower.y-50, 100, 100)
   }
-  
-  
-  update() {
-    // Find the closest enemy within range
+}
+class Monkeys {
+  constructor(image, imageSizeX, imageSizeY, bulletType, monkeyType) {
+    this.image = image;
+    this.imageSizeX = imageSizeX;
+    this.imageSizeY = imageSizeY;
+    this.bulletType = bulletType;
+    this.monkeyType = monkeyType;
+  }
+  update3() {
+    alert("test");
+    console.log("udpates")
+  }
+  update2() {
     let closestDist = Infinity;
     let closestEnemy = null;
-    
-    for (let enemy of enemies) {
-      let dist = Math.sqrt((enemy.pos.x - this.x) ** 2 + (enemy.pos.y - this.y) ** 2);
-      if (dist < this.range && dist < closestDist) {
-        closestDist = dist;
-        closestEnemy = enemy;
+    let leadingEnemy = null;
+    let lastEnemyInRange = null;
+
+    for (let i = 0 ;i < enemies.length; i++) {
+      let dist = Math.sqrt((enemies[i].pos.x - this.x) ** 2 + (enemies[i].pos.y - this.y) ** 2);
+      if (dist < this.range) {
+        leadingEnemy = enemies[i];
+        break;
       }
     }
 
+    for(let i = enemies.length - 1; i >= 0; i--){
+      let dist = Math.sqrt((enemies[i].pos.x - this.x) ** 2 + (enemies[i].pos.y - this.y) ** 2);
+      if (dist < this.range) {
+        lastEnemyInRange = enemies[i];
+        break;
+      }
+    }
+
+
     // Set the tower's target to the closest enemy within range
-    this.target = closestEnemy;
+    if(this.monkeyType == "dart"){
+      this.target = leadingEnemy;
+    }
+    if(this.monkeyType == "catapult"){
+      this.target = lastEnemyInRange;
+    }
 
     // Fire a bullet at the target if the tower is not on cooldown
     if (this.target && this.fireCooldown === 0) {
-      let direction = calculateDirection(this, enemies[0]);
+      let direction = calculateDirection(this, this.target);
       //console.log(direction)
-      var newBullet = new Bullet(this.x, this.y, 6, 1, direction);
+      var newBullet = new Bullet(this.x, this.y, 6, 1, direction, this.bulletType);
       //console.log(newBullet)
       bullets.push(newBullet);
-      enemies.splice(0, 1)
+      swingAudio.currentTime = 0;
+      swingAudio.play();
+      //enemies.splice(0, 1)
       this.fireCooldown = 60; // 60 frames between shots
     }
 
@@ -221,23 +257,8 @@ class Soldier {
     if (this.fireCooldown > 0) {
       this.fireCooldown--;
     }
-    
-    if (enemies[0]) {
-      // Rotate the tower towards the enemy
-      //this.rotateTowardsEnemy(enemies[0]);
+  }
   
-      // Fire a bullet at the enemy
-      //this.fireBullet(enemy, bullets);
-    }
-    
-    
-    
-  }
-
-  draw() {
-    context.drawImage(monkey_img, this.x - 32, this.y - 32, 64, 64)
-    
-  }
   
   rotateTowardsEnemy(enemy) {
     console.log("1")
@@ -250,13 +271,14 @@ class Soldier {
     console.log("3")
     context.save()
     // Set the origin point to the center of the tower
-    context.translate(this.x, this.y);
+    context.translate(this.x + 5, this.y);
+    console.log(this.x + " : " + this.y)
   
     // Rotate the tower towards the enemy
     context.rotate(angle + Math.PI / 2);
-    context.drawImage(monkey_img, -32, -32, 64, 64)
+    context.drawImage(this.image, -this.imageSizeX/2, -this.imageSizeY/2, this.imageSizeX, this.imageSizeY)
     // Reset the origin point to the top-left corner of the tower
-  
+ 
     //context.translate(-this.x, -this.y);
   
   
@@ -275,7 +297,7 @@ class Soldier {
   
     // Rotate the tower towards the enemy
     context.rotate(angle + Math.PI / 2);
-    context.drawImage(monkey_img, -32, -32, 64, 64)
+    context.drawImage(this.image, -this.imageSizeX/2, -this.imageSizeY/2, this.imageSizeX, this.imageSizeY)
     // Reset the origin point to the top-left corner of the tower
   
     //context.translate(-this.x, -this.y);
@@ -283,25 +305,97 @@ class Soldier {
   
     context.restore()
   }
+  
 }
+
+
+class Soldier extends Monkeys {
+  
+  constructor(x, y, r, attack, range, rcolor){
+    super(monkey_img, 64, 64, "a", "dart");
+    this.x = x;
+    this.y = y;
+    this.r = r;
+    this.attack = attack;
+    this.range = range;
+    this.rcolor = rcolor;
+    this.target = null;
+    this.fireCooldown = 0;
+    this.isPlaced = false;
+    
+  }
+  update(){
+    this.update2();
+  }
+  
+}
+
+class CatapultMonkey extends Monkeys {
+  constructor(x, y, r, attack, range, rcolor){
+    super(catapult_img, 100, 100, "b", "catapult");
+    this.x = x;
+    this.y = y;
+    this.r = r;
+    this.attack = attack;
+    this.range = range;
+    this.rcolor = rcolor;
+    this.target = null;
+    this.fireCooldown = 0;
+    this.isPlaced = false;
+    
+  }
+
+  update() {
+    this.update2();
+  }
+  
+}
+
 
 
 // -----------------------------------
 
 
 class Bullet {
-  constructor(x, y, speed, damage, direction) {
+  constructor(x, y, speed, damage, direction, bulletType) {
     this.x = x;
     this.y = y;
     this.speed = speed;
     this.damage = damage;
     this.direction = direction;
+    this.bulletType = bulletType;
   }
 
   move() {
     this.x += this.speed * this.direction.x;
     this.y += this.speed * this.direction.y;
+    this.checkCollision()
   }
+
+  checkCollision() {
+    
+    for (let i = 0; i < enemies.length; i++) {
+      let enemy = enemies[i];
+      let dist = Math.sqrt((enemy.pos.x - this.x) ** 2 + (enemy.pos.y - this.y) ** 2);
+      if (dist < 20) {
+        //enemy.health -= this.damage;
+        //bullets.splice(indexOf(this), 1);
+        enemies.splice(i, 1)
+        popAudio.currentTime = 0.235;
+        popAudio.play();
+
+        //return true;
+        if(this.bulletType == "a"){
+          bullets.splice(bullets.indexOf(this), 1)
+        }
+
+      }
+    }
+    //return false;
+    
+  }
+
+  
 }
 
 function calculateDirection(tower, enemy) {
@@ -408,6 +502,7 @@ function renderPath(){
 
 function renderGrid(){
   context.fillStyle = "black";
+  context.lineWidth = 0.5;
 
   let x = 0;
   for (let i = 0; i < SW/TILE_W; i++) {
@@ -429,7 +524,7 @@ function renderGrid(){
     y+= TILE_W;
     
   }
-
+  context.lineWidth = 1;
 }
 
 function render (){
@@ -453,6 +548,7 @@ function render (){
     context.strokeStyle = towers[i].rcolor;
     context.beginPath();
     context.arc(towers[i].x, towers[i].y, towers[i].range, 0, Math.PI*2);
+    context.setLineDash([15, 5])
     context.lineWidth = 2;
     context.stroke();
     context.lineWidth = 1;
@@ -460,13 +556,42 @@ function render (){
     
    //context.drawImage(monkey_img, towers[i].x -32, towers[i].y-32, 64, 64)
   }
-  
+  context.setLineDash([0, 0])
   // Draw the selected tower
   drawSelectedTower();
+  drawCatapultMonkeys();
+
+  
+}
+
+function changeUpgradeColor(color, firstId) {
+  var upgradePath1 = document.getElementById(firstId + 0)
+  var upgradePath2 = document.getElementById(firstId + 1)
+  var upgradePath3 = document.getElementById(firstId + 2)
+  upgradePath1.style.stroke=color;
+  upgradePath2.style.stroke=color;
+  upgradePath3.style.stroke=color;
+
 }
 
 TEST_BUTTON.addEventListener('click', function(event) { 
-  
+  /*var upgradePath1 = document.getElementById("a")
+  var upgradePath2 = document.getElementById("b")
+  var upgradePath3 = document.getElementById("c")
+  upgradePath1.style.stroke="blue";
+  upgradePath2.style.stroke="blue";
+  upgradePath3.style.stroke="blue";*/
+  //changeUpgradeColor("blue", 1)
+
+  if(gold >= 100){
+    gold -= 100;
+    document.getElementById("gold").innerHTML = `Gold: ${gold}`;
+    CatapultMonkey.placing = true;
+    document.getElementById("canvas").style.cursor = "move";
+    var newCatapult = new CatapultMonkey(event.clientX, event.clientY, 20, 10, 150);
+    towers.push(newCatapult);
+    selectedTower = newCatapult;
+  }
   
   
   
@@ -546,17 +671,39 @@ function play(){
   render();
   renderBullets();
   towers.forEach(function(e){
-    if(!enemies[0]){
+    if(!enemies[0] && e.isPlaced){
       console.log("rotate to point")
+      console.log(e)
       e.rotateTowardsPoint(startPos.x, startPos.y)
+      return
     }
-    if(enemies[0]){
-      e.update()
-      if(e.isPlaced){
-        //console.log("pre rotate")
+
+    if(!e.target){
+      if(e.isPlaced) {
+        
+        e.update()
+        
         e.rotateTowardsEnemy(enemies[0])
+        
+      }
+      
+    }
+    if(e.target){
+      
+      if(e.isPlaced){
+        e.update()
+        //console.log("pre rotate")
+        console.log(e.target)
+        try{
+          e.rotateTowardsEnemy(e.target)
+        }catch {
+          e.rotateTowardsEnemy(enemies[0])
+        }
+        //prevents monkey from dissapearing when target is killed
+        
         //console.log("rotate")
       }
+      
     }
     
     //e.draw()
@@ -565,17 +712,33 @@ function play(){
   })
   bullets.forEach(function(b){
     b.move()
+    b.checkCollision()
   })
   //console.log(bullets.length + "bullet length")
   for(let i = 0; i < bullets.length; i++) {
-    context.drawImage(bullet_img, bullets[i].x - 16, bullets[i].y - 16, 32, 32)
+    console.log(bullets[i].bulletType)
+    if(bullets[i].bulletType == "a"){
+      context.drawImage(bullet_img, bullets[i].x - 24, bullets[i].y - 24, 48, 48)
+      
+    } else {
+      context.drawImage(catapult_projectile_img, bullets[i].x - 32, bullets[i].y - 32, 64, 64)
+    }
+    
     bullets[i].move()
   }
-  
+  if(musicStart){
+    const mainMusic = document.getElementById("main-music");
+    mainMusic.volume = 1;
+    mainMusic.play();
+    musicStart = false;
+  }
   //for(let i = 0; i < bullets.length; i++) {
   //  bullets[i].move()
   //}
   //direction = calculateDirection(towers[0], enemies[0]);
+  if(gold < 50) {
+    changeUpgradeColor("red", 4)
+  }
   
   if (!placing){
     /*if(towers[0].fireCooldown == 0) {
