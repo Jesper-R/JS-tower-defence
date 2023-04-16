@@ -122,6 +122,8 @@ canvas{
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  width: 300px;
 }
 
 .catapult-container{
@@ -132,8 +134,25 @@ canvas{
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  width: 200px;
+}
+.test svg {
+  position: absolute;
+  top: -5px;
+}
+
+.test .cost {
+  
+  position: relative;
+  top: 30;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .test svg:hover {
+  scale: 1.2;
   cursor: pointer;
+  width: 70px;
+  height: 70px;
 }
