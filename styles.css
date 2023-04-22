@@ -36,19 +36,29 @@ canvas{
   right: 0;*/
 }
 
+#death-screen {
+  display: none;
+}
+
 #dead{
   
   position: absolute;
-  
-  text-align: center;
-  width: 100vw;
-  height: 300px;
-  top: 295px;
-  display: none;
-  user-select: none;
+  left: 50%;
+  top: 370px;
+  transform: translate(-50%,-50%);
   font-family: 'Bungee Spice';
   font-size: 200px;
+  
 }
+
+#restart-button {
+  position: absolute;
+  left: 50%;
+  top: calc(370px + 150px);
+  transform: translate(-50%,-50%);
+}
+
+
 .wrapper {
   display: flex;
   justify-content: center;
@@ -84,7 +94,7 @@ canvas{
   
 }
 
-#soldier-button, #test-button {
+#soldier-button, #test-button, #restart-button {
  height: 60px; 
  width: 250px;
  border-radius: 10px;
@@ -97,19 +107,16 @@ canvas{
 
 }
 
-#soldier-button:hover, #test-button:hover {
+#soldier-button:hover, #test-button:hover, #restart-button:hover{
   background-color: brown;
   cursor: pointer;
 }
 
-#soldier-button:active, #test-button:active {
+#soldier-button:active, #restart-button:active, #test-button:active{
   background-color: darkred;
 }
 
 
-#test-button {
-  
-}
 
 .soldier-wrapper p {
   margin-top: 10px;

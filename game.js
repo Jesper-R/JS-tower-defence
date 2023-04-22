@@ -6,6 +6,7 @@ const SW = canvas.width;
 const SH = canvas.height;
 const SOLDIER_BUTTON = document.getElementById("soldier-button");
 const TEST_BUTTON = document.getElementById("test-button");
+const RESTART_BUTTON = document.getElementById("restart-button");
 const UPGRADE_MONKEY_BUTTON = document.getElementById("upgrade-monkey-button");
 const TILE_W = 25;
 const swingAudio = document.getElementById("swing-audio");
@@ -55,30 +56,55 @@ var bullets = [];
 var roundStart = true;
 var round = 0;
 
-
 function wave1() {
   enemies = [];
-
+  enemyStart.y = 0;
+  enemies.push(new RedBalloon())
+  enemyStart.y -= 40;
+  enemies.push(new BlueBalloon())
+  enemyStart.y -= 40;
+  enemies.push(new RedBalloon())
+  enemyStart.y -= 40;
+  enemies.push(new BlueBalloon())
+  enemyStart.y -= 40;
+  enemies.push(new RedBalloon())
+  enemyStart.y -= 40;
+  enemies.push(new BlueBalloon())
+  enemyStart.y -= 40;
+  enemies.push(new RedBalloon())
+  enemyStart.y -= 40;
+  enemies.push(new BlueBalloon())
+  enemyStart.y -= 40;
+  /*
   for (let i = 0; i < NUM_ENEMIES; i++) {
-    let newEnemy = new Enemy(
-      new Vector(enemyStart.x, enemyStart.y),
-      "red",
-      20,
-      5,
-      2
-    );
-    console.log("creation hp" + newEnemy.health);
+    let newEnemy = new PinkBalloon();
     enemies[i] = newEnemy;
     enemyStart.y -= 40;
   }
-  console.log(enemies + "sndiansd")
+  console.log(enemies + "sndiansd")*/
 }
 
 function wave2() {
   enemies = [];
   // change below for time before spawn
   enemyStart.y = 0;
-  
+  enemies.push(new RedBalloon())
+  enemyStart.y -= 40;
+  enemies.push(new GreenBalloon())
+  enemyStart.y -= 40;
+  enemies.push(new RedBalloon())
+  enemyStart.y -= 40;
+  enemies.push(new GreenBalloon())
+  enemyStart.y -= 40;
+  enemies.push(new RedBalloon())
+  enemyStart.y -= 40;
+  enemies.push(new GreenBalloon())
+  enemyStart.y -= 40;
+  enemies.push(new RedBalloon())
+  enemyStart.y -= 40;
+  enemies.push(new GreenBalloon())
+  enemyStart.y -= 40;
+  /*
   for (let i = 0; i < 5; i++) {
     let newEnemy = new Enemy(
       new Vector(enemyStart.x, enemyStart.y),
@@ -88,8 +114,10 @@ function wave2() {
       1
     );
     enemies[i] = newEnemy;
+    
     enemyStart.y -= 40;
   }
+  */
 }
 
 function generateWave() {
@@ -187,7 +215,7 @@ class Enemy {
       enemies.splice(0, 1);
       document.getElementById("lives").innerHTML = `HP: ${(hp -= 10)}`;
       if (hp == 0) {
-        document.getElementById("dead").style.display = "block";
+        document.getElementById("death-screen").style.display = "block";
       }
     }
     //console.log("Ballooon color check with" + this.health + "health")
@@ -225,6 +253,38 @@ class Enemy {
   }
 }
 
+class RedBalloon extends Enemy {
+  constructor() {
+    super(new Vector(enemyStart.x, enemyStart.y), "red", 2, 1, 1);
+  }
+}
+
+class BlueBalloon extends Enemy {
+  constructor() {
+    super(new Vector(enemyStart.x, enemyStart.y), "blue", 2, 2, 2);
+  }
+}
+
+class GreenBalloon extends Enemy {
+  constructor() {
+    super(new Vector(enemyStart.x, enemyStart.y), "green", 2, 3, 3);
+  }
+}
+
+class YellowBalloon extends Enemy {
+  constructor() {
+    super(new Vector(enemyStart.x, enemyStart.y), "yellow", 2, 4, 4);
+  }
+}
+
+class PinkBalloon extends Enemy {
+  constructor() {
+    super(new Vector(enemyStart.x, enemyStart.y), "pink", 2, 5, 5);
+  }
+}
+
+
+
 SOLDIER_BUTTON.addEventListener("click", function (event) {
   if (gold >= 50) {
     //console.log("start placing")
@@ -243,6 +303,10 @@ SOLDIER_BUTTON.addEventListener("click", function (event) {
     towers.push(newTower);
     selectedTower = newTower;
   }
+});
+
+RESTART_BUTTON.addEventListener("click", function (event) {
+  location.reload();
 });
 
 canvas.addEventListener("mousemove", function (event) {
@@ -754,6 +818,10 @@ setInterval(renderBullets, 1000 / 60);
 shooting = true;
 
 function play() {
+
+  enemies.forEach(enemy => {
+    console.log(enemy.pos.x + ";;;" + enemy.pos.y)
+  });
   if (!enemies[0] && hp > 0) {
     roundStart = true;
     round += 1;
