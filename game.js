@@ -210,9 +210,10 @@ class Enemy {
     //console.log(this.pos.x)
     //console.log(this.pos.y)
 
+
     if (599 < this.pos.y) {
       //console.log('delete balloon and remove hp')
-      enemies.splice(0, 1);
+      enemies.splice(enemies.indexOf(this), 1);
       document.getElementById("lives").innerHTML = `HP: ${(hp -= 10)}`;
       if (hp == 0) {
         document.getElementById("death-screen").style.display = "block";
