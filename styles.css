@@ -75,7 +75,7 @@ canvas{
 
 }
 .game-info div{
-  margin-left: 20px;
+  margin-left: 75px;
   
   
 
@@ -94,7 +94,7 @@ canvas{
   
 }
 
-#soldier-button, #test-button, #restart-button {
+#soldier-button, #test-button, #restart-button, #start-button {
  height: 60px; 
  width: 250px;
  border-radius: 10px;
@@ -104,18 +104,26 @@ canvas{
  font-size: 17px;
  border: 0px;
  font-family: 'Inter';
-
+ 
+}
+#soldier-button:disabled, #test-button:disabled {
+  background-color: rgba(163, 60, 29, 0.473);
 }
 
-#soldier-button:hover, #test-button:hover, #restart-button:hover{
+#soldier-button:hover, #test-button:hover, #restart-button:hover, #start-button:hover{
   background-color: brown;
   cursor: pointer;
 }
 
-#soldier-button:active, #restart-button:active, #test-button:active{
+#soldier-button:active, #restart-button:active, #test-button:active, #start-button:active{
   background-color: darkred;
 }
 
+#start-button {
+  margin-left: calc(50% - 125px);
+  margin-top: 20px;
+  
+}
 
 
 .soldier-wrapper p {

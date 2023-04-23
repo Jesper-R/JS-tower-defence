@@ -8,6 +8,7 @@ const SOLDIER_BUTTON = document.getElementById("soldier-button");
 const TEST_BUTTON = document.getElementById("test-button");
 const RESTART_BUTTON = document.getElementById("restart-button");
 const UPGRADE_MONKEY_BUTTON = document.getElementById("upgrade-monkey-button");
+const START_BUTTON = document.getElementById("start-button")
 const TILE_W = 25;
 const swingAudio = document.getElementById("swing-audio");
 const popAudio = document.getElementById("pop-audio");
@@ -43,8 +44,8 @@ balloon_img_5.src = "sprites/balloons/balloon-lvl-5.png";
 var bgcolor = "green";
 var target = 1;
 var hp = 100;
-var gold = 200;
-var placing = true;
+var gold = 100;
+var placing = false;
 var musicStart = true;
 var dartMonkeyLevel = 1;
 var enemies = [];
@@ -55,69 +56,66 @@ var upgradeCost = 50;
 var bullets = [];
 var roundStart = true;
 var round = 0;
+var started = false;
+
+function offset(color) {
+  switch(object) {
+    case "red":
+    return 20
+  }
+}
 
 function wave1() {
   enemies = [];
   enemyStart.y = 0;
-  enemies.push(new RedBalloon())
-  enemyStart.y -= 40;
-  enemies.push(new BlueBalloon())
-  enemyStart.y -= 40;
-  enemies.push(new RedBalloon())
-  enemyStart.y -= 40;
-  enemies.push(new BlueBalloon())
-  enemyStart.y -= 40;
-  enemies.push(new RedBalloon())
-  enemyStart.y -= 40;
-  enemies.push(new BlueBalloon())
-  enemyStart.y -= 40;
-  enemies.push(new RedBalloon())
-  enemyStart.y -= 40;
-  enemies.push(new BlueBalloon())
-  enemyStart.y -= 40;
-  /*
-  for (let i = 0; i < NUM_ENEMIES; i++) {
-    let newEnemy = new PinkBalloon();
-    enemies[i] = newEnemy;
-    enemyStart.y -= 40;
-  }
-  console.log(enemies + "sndiansd")*/
+  
+  const balloons = [
+    { type: RedBalloon, count: 5 },
+    { type: BlueBalloon, count: 3 },
+  ];
+  
+  balloons.forEach(balloon => {
+    for (let i = 0; i < balloon.count; i++) {
+      enemies.push(new balloon.type());
+      enemyStart.y -= enemies[enemies.length - 1].spawnOffset;
+    }
+  });
 }
 
 function wave2() {
   enemies = [];
-  // change below for time before spawn
   enemyStart.y = 0;
-  enemies.push(new RedBalloon())
-  enemyStart.y -= 40;
-  enemies.push(new GreenBalloon())
-  enemyStart.y -= 40;
-  enemies.push(new RedBalloon())
-  enemyStart.y -= 40;
-  enemies.push(new GreenBalloon())
-  enemyStart.y -= 40;
-  enemies.push(new RedBalloon())
-  enemyStart.y -= 40;
-  enemies.push(new GreenBalloon())
-  enemyStart.y -= 40;
-  enemies.push(new RedBalloon())
-  enemyStart.y -= 40;
-  enemies.push(new GreenBalloon())
-  enemyStart.y -= 40;
-  /*
-  for (let i = 0; i < 5; i++) {
-    let newEnemy = new Enemy(
-      new Vector(enemyStart.x, enemyStart.y),
-      "red",
-      20,
-      3,
-      1
-    );
-    enemies[i] = newEnemy;
+
+  const balloons = [
+    { type: RedBalloon, count: 10},
+    { type: GreenBalloon, count: 3 },
+  ];
+
+  balloons.forEach(balloon => {
+    for (let i = 0; i < balloon.count; i++) {
+      enemies.push(new balloon.type());
+      enemyStart.y -= enemies[enemies.length - 1].spawnOffset;
+    }
+  });
+}
+
+function wave3() {
+  enemies = [];
+  enemyStart.y = 0;
+
+  const balloons = [
+    { type: BlueBalloon, count: 5},
+    { type: GreenBalloon, count: 2 },
+    { type: YellowBalloon, count: 2 },
     
-    enemyStart.y -= 40;
-  }
-  */
+  ];
+
+  balloons.forEach(balloon => {
+    for (let i = 0; i < balloon.count; i++) {
+      enemies.push(new balloon.type());
+      enemyStart.y -= enemies[enemies.length - 1].spawnOffset;
+    }
+  });
 }
 
 function generateWave() {
@@ -127,6 +125,9 @@ function generateWave() {
   }
   if (round == 2) {
     wave2();
+  }
+  if (round == 3) {
+    wave3();
   }
 
   // add infinte wave gen after wave 10
@@ -142,12 +143,34 @@ class Vector {
 }
 var enemyStart = new Vector(125, 0);
 var startPos = new Vector(125, 0);
+//bryter upp så jag kan uppdatera vilken ballong som ligger först
 var pathData = [
-  new Vector(0, 200),
-  new Vector(550, 0),
-  new Vector(0, 200),
-  new Vector(-550, 0),
-  new Vector(0, 200),
+  new Vector(0, 50),
+  new Vector(0, 50),
+  new Vector(0, 50),
+  new Vector(0, 50),
+
+  new Vector(110, 0),
+  new Vector(110, 0),
+  new Vector(110, 0),
+  new Vector(110, 0),
+  new Vector(110, 0),
+
+  new Vector(0, 50),
+  new Vector(0, 50),
+  new Vector(0, 50),
+  new Vector(0, 50),
+
+  new Vector(-110, 0),
+  new Vector(-110, 0),
+  new Vector(-110, 0),
+  new Vector(-110, 0),
+  new Vector(-110, 0),
+  
+  new Vector(0, 50),
+  new Vector(0, 50),
+  new Vector(0, 50),
+  new Vector(0, 50),
 ];
 
 class Enemy {
@@ -213,11 +236,17 @@ class Enemy {
 
     if (599 < this.pos.y) {
       //console.log('delete balloon and remove hp')
+      document.getElementById("lives").innerHTML = `HP: ${(hp -= enemies[enemies.indexOf(this)].health)}`;
       enemies.splice(enemies.indexOf(this), 1);
-      document.getElementById("lives").innerHTML = `HP: ${(hp -= 10)}`;
-      if (hp == 0) {
+      popAudio.volume = 0.5;
+      popAudio.currentTime = 0.235;
+      popAudio.play();
+      
+      if (hp <= 0) {
         document.getElementById("death-screen").style.display = "block";
+        started = false;
       }
+      
     }
     //console.log("Ballooon color check with" + this.health + "health")
   }
@@ -255,35 +284,49 @@ class Enemy {
 }
 
 class RedBalloon extends Enemy {
-  constructor() {
+  constructor(spawnOffset) {
     super(new Vector(enemyStart.x, enemyStart.y), "red", 2, 1, 1);
+    this.spawnOffset = 30;
   }
 }
 
 class BlueBalloon extends Enemy {
-  constructor() {
+  constructor(spawnOffset) {
     super(new Vector(enemyStart.x, enemyStart.y), "blue", 2, 2, 2);
+    this.spawnOffset = 60;
   }
 }
 
 class GreenBalloon extends Enemy {
-  constructor() {
+  constructor(spawnOffset) {
     super(new Vector(enemyStart.x, enemyStart.y), "green", 2, 3, 3);
+    this.spawnOffset = 80;
   }
 }
 
 class YellowBalloon extends Enemy {
-  constructor() {
+  constructor(spawnOffset) {
     super(new Vector(enemyStart.x, enemyStart.y), "yellow", 2, 4, 4);
+    this.spawnOffset = 50;
   }
 }
 
 class PinkBalloon extends Enemy {
-  constructor() {
+  constructor(spawnOffset) {
     super(new Vector(enemyStart.x, enemyStart.y), "pink", 2, 5, 5);
+    this.spawnOffset = 100;
   }
 }
 
+function updateBalloonSpeed(health) {
+  switch(health) {
+    case 1: return 1;
+    case 2: return 2;
+    case 3: return 3 ;
+    case 4: return 4;
+    case 5: return 5;
+  }
+}
 
 
 SOLDIER_BUTTON.addEventListener("click", function (event) {
@@ -294,8 +337,8 @@ SOLDIER_BUTTON.addEventListener("click", function (event) {
     Soldier.placing = true;
     document.getElementById("canvas").style.cursor = "move";
     var newTower = new Soldier(
-      event.clientX,
-      event.clientY,
+      event.clientX - canvas.getBoundingClientRect().left,
+      event.clientY - canvas.getBoundingClientRect().top,
       20,
       10,
       100,
@@ -307,7 +350,36 @@ SOLDIER_BUTTON.addEventListener("click", function (event) {
 });
 
 RESTART_BUTTON.addEventListener("click", function (event) {
-  location.reload();
+  //location.reload();
+  restart();
+});
+
+function restart() {
+  hp = 100;
+  round = 0;
+  dartMonkeyLevel = 1;
+  document.getElementById("death-screen").style.display = "none";
+  towers = []
+  enemies = []
+  started = true;
+  gold = 100;
+  updateGold(gold);
+  updateHealth(hp);
+  updateRound(round);
+  target = 1;
+  placing = false;
+  selectedTower = null;
+  canUpgrade = true;
+  upgradeCost = 50;
+  bullets = [];
+  roundStart = true;
+  updateUpgradeCost();
+  monkey_img.src = "sprites/default-monkeys/dart-monkey.png";
+}
+
+START_BUTTON.addEventListener("click", function (event) {
+  started = true;
+  START_BUTTON.style.display = "none"
 });
 
 canvas.addEventListener("mousemove", function (event) {
@@ -316,7 +388,9 @@ canvas.addEventListener("mousemove", function (event) {
     // Update the position of the selected tower to follow the user's mouse pointer
     selectedTower.x = event.clientX - canvas.getBoundingClientRect().left;
     selectedTower.y = event.clientY - canvas.getBoundingClientRect().top;
+    
     isTowerOnPath(selectedTower);
+    isMonkeyOnAnotherMonkey(selectedTower)
   }
 });
 
@@ -324,19 +398,40 @@ canvas.addEventListener("click", handleClick, true);
 
 function handleClick() {
   if (Soldier.placing) {
-    if (!isTowerOnPath(selectedTower)) {
+    if (!isTowerOnPath(selectedTower) && !isMonkeyOnAnotherMonkey(selectedTower)) {
       Soldier.placing = false;
       selectedTower.isPlaced = true;
       document.getElementById("canvas").style.cursor = "default";
     }
   }
   if (CatapultMonkey.placing) {
-    if (!isTowerOnPath(selectedTower)) {
+    if (!isTowerOnPath(selectedTower) && !isMonkeyOnAnotherMonkey(selectedTower)) {
       CatapultMonkey.placing = false;
       selectedTower.isPlaced = true;
       document.getElementById("canvas").style.cursor = "default";
     }
   }
+}
+function isMonkeyOnAnotherMonkey(monkey) {
+  for (let i = 0; i < towers.length; i++) {
+    let tower = towers[i];
+
+    let dist = Math.sqrt(
+      (tower.x - monkey.x) ** 2 + (tower.y - monkey.y) ** 2
+    );
+    console.log(monkey.x + "mx")
+    console.log(tower.x + "tx")
+    //console.log(towers)
+    console.log(dist)
+    if (dist < 25 && towers.length > 1 ) {
+      selectedTower.rcolor = "red";
+      console.log("MONKEY")
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
 }
 
 function isTowerOnPath(tower) {
@@ -451,6 +546,7 @@ class Monkeys {
       );
       //console.log(newBullet)
       bullets.push(newBullet);
+      swingAudio.volume = 0.3;
       swingAudio.currentTime = 0;
       swingAudio.play();
       //enemies.splice(0, 1)
@@ -584,26 +680,33 @@ class Bullet {
         this.damage = 1;
       }
       
-      console.log("hp" + enemies[i].health);
+      //console.log("hp" + enemies[i].health);
       let enemy = enemies[i];
       let dist = Math.sqrt(
         (enemy.pos.x - this.x) ** 2 + (enemy.pos.y - this.y) ** 2
       );
       if (dist < 25) {
-        console.log("prethit hp " + enemies[i].health);
+        //console.log("prethit hp " + enemies[i].health);
 
         // Making so the balloons hit by catapult dont get instantly deleted by checking if the bullet that hit them is the same object and if it is it
         // will not do damage to the balloon since it already did damage to it
         // This isnt a problem with the dart monkey because the bullet gets deleted right after a hit
         // also makes so it wont give gold for multiple collissions when spike travels over balloon
         if (!enemy.hitBy.includes(this) || this.bulletType == "a") {
-          enemy.health -= this.damage;
-          enemy.hitBy.push(this)
-          gold += 10 * this.damage;
+          if(enemy.health < this.damage) {
+            gold += 5 * enemy.health
+            enemy.health -= this.damage;
+          } else {
+            enemy.health -= this.damage;
+            enemy.speed = updateBalloonSpeed(enemy.health)
+            enemy.hitBy.push(this)
+            gold += 5 * this.damage;
+          }
         }
         
 
-        console.log("posthit hp " + enemies[i].health);
+        //console.log("posthit hp " + enemies[i].health);
+        popAudio.volume = 0.5;
         popAudio.currentTime = 0.235;
         popAudio.play();
 
@@ -627,6 +730,17 @@ class Bullet {
 }
 function updateGold(gold) {
   document.getElementById("gold").innerHTML = `Gold: ${gold}`;
+}
+function updateHealth(health) {
+  document.getElementById("lives").innerHTML = `HP: ${health}`;
+}
+function updateRound(round) {
+  document.getElementById("current-round").innerHTML = `Round: ${round}`;
+}
+function updateUpgradeCost() {
+  document.getElementById("dart-upgrade-cost").innerHTML = `${
+    50 * dartMonkeyLevel
+  }g`;
 }
 
 function calculateDirection(tower, enemy) {
@@ -716,13 +830,26 @@ function renderGrid() {
 function render() {
   context.fillStyle = bgcolor;
   context.fillRect(0, 0, SW, SH);
-
+  
   renderPath();
   renderGrid();
 
-  enemies.forEach(function (s) {
-    s.render();
+  // Create an array of indices for the enemies array
+  const enemyIndices = enemies.map((enemy, index) => index);
+
+  // Custom comparison function for sorting the enemy indices by hp
+  const compareIndicesByHP = (index1, index2) => {
+    return enemies[index1].health - enemies[index2].health;
+  };
+
+  // Sort the enemyIndices array using the custom comparison function
+  enemyIndices.sort(compareIndicesByHP);
+
+  // Render enemies in ascending order of HP based on the sorted indices
+  enemyIndices.forEach(index => {
+   enemies[index].render();
   });
+ 
 
   // Draw your towers
   for (var i = 0; i < towers.length; i++) {
@@ -795,7 +922,12 @@ UPGRADE_MONKEY_BUTTON.addEventListener("click", function (event) {
 
     case 4:
       monkey_img.src = "sprites/upgrades/dart-monkey-upgrade-5.png";
-      break;
+      document.getElementById("dart-upgrade-cost").innerHTML = "MAX"
+      dartMonkeyLevel += 1;
+      return;
+
+    default: 
+      return;
   }
   gold -= upgradeCost;
   dartMonkeyLevel += 1;
@@ -818,32 +950,25 @@ setInterval(renderBullets, 1000 / 60);
 
 shooting = true;
 
+function updateOrder() {
+  enemies.sort(function(a,b){return a.targets.length - b.targets.length});
+}
+function controlButtons() {
+  if(started == false) {
+    SOLDIER_BUTTON.disabled = true;
+    UPGRADE_MONKEY_BUTTON.disabled = true;
+    TEST_BUTTON.disabled = true;
+    UPGRADE_MONKEY_BUTTON.style.pointerEvents = "none"
+  } else {
+    SOLDIER_BUTTON.disabled = false;
+    UPGRADE_MONKEY_BUTTON.disabled = false;
+    TEST_BUTTON.disabled = false;
+    UPGRADE_MONKEY_BUTTON.style.pointerEvents = "all"
+  }
+}
 function play() {
-
-  enemies.forEach(enemy => {
-    console.log(enemy.pos.x + ";;;" + enemy.pos.y)
-  });
-  if (!enemies[0] && hp > 0) {
-    roundStart = true;
-    round += 1;
-    generateWave();
-  }
-
-  if (gold >= upgradeCost) {
-    canUpgrade = true;
-  } else {
-    canUpgrade = false;
-  }
-  if (canUpgrade) {
-    changeUpgradeColor("green", 4);
-  } else {
-    changeUpgradeColor("red", 4);
-  }
-
-  update();
+  controlButtons();
   render();
-  renderBullets();
-
   towers.forEach(function (e) {
     if (!enemies[0] && e.isPlaced) {
       //console.log("rotate to point")
@@ -874,6 +999,37 @@ function play() {
       }
     }
   });
+  if (!started) {return}
+  updateOrder()
+  enemies.forEach(enemy => {
+    //console.log(enemy.pos.x + ";;;" + enemy.pos.y)
+    //console.log(enemy.targets.length)
+  });
+
+  if (!enemies[0] && hp > 0) {
+    roundStart = true;
+    
+    round += 1;
+    document.getElementById("current-round").innerHTML = `Round: ${round}`
+    generateWave();
+  }
+
+  if (gold >= upgradeCost) {
+    canUpgrade = true;
+  } else {
+    canUpgrade = false;
+  }
+  if (canUpgrade && dartMonkeyLevel < 5) {
+    changeUpgradeColor("green", 4);
+  } else {
+    changeUpgradeColor("red", 4);
+  }
+
+  update();
+  
+  renderBullets();
+
+  
 
   bullets.forEach(function (b) {
     b.move();
@@ -905,7 +1061,7 @@ function play() {
 
   if (musicStart) {
     const mainMusic = document.getElementById("main-music");
-    mainMusic.volume = 1;
+    mainMusic.volume = 0.2;
     mainMusic.play();
     musicStart = false;
   }
@@ -913,6 +1069,8 @@ function play() {
   if (gold < 50) {
     changeUpgradeColor("red", 4);
   }
+
+  
 }
 
 setInterval(play, 1000 / 60);
