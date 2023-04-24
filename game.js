@@ -58,13 +58,6 @@ var roundStart = true;
 var round = 0;
 var started = false;
 
-function offset(color) {
-  switch(object) {
-    case "red":
-    return 20
-  }
-}
-
 function wave1() {
   enemies = [];
   enemyStart.y = 0;
@@ -107,7 +100,6 @@ function wave3() {
     { type: BlueBalloon, count: 5},
     { type: GreenBalloon, count: 2 },
     { type: YellowBalloon, count: 2 },
-    
   ];
 
   balloons.forEach(balloon => {
@@ -118,16 +110,83 @@ function wave3() {
   });
 }
 
+function wave4() {
+  enemies = [];
+  enemyStart.y = 0;
+
+  const balloons = [
+    { type: BlueBalloon, count: 3},
+    { type: GreenBalloon, count: 5 },
+    { type: YellowBalloon, count: 4 },
+  ];
+
+  balloons.forEach(balloon => {
+    for (let i = 0; i < balloon.count; i++) {
+      enemies.push(new balloon.type());
+      enemyStart.y -= enemies[enemies.length - 1].spawnOffset;
+    }
+  });
+}
+
+function wave5() {
+  enemies = [];
+  enemyStart.y = 0;
+
+  const balloons = [
+    { type: PinkBalloon, count: 3},
+    { type: GreenBalloon, count: 5 },
+    { type: YellowBalloon, count: 4 },
+  ];
+
+  balloons.forEach(balloon => {
+    for (let i = 0; i < balloon.count; i++) {
+      enemies.push(new balloon.type());
+      enemyStart.y -= enemies[enemies.length - 1].spawnOffset;
+    }
+  });
+}
+
+function infiniteWaves() {
+  enemies = [];
+  enemyStart.y = 0;
+
+  const balloons = [
+    { type: RedBalloon, count: 0},
+    { type: BlueBalloon, count: Math.floor(round-2 ** 1.10)},
+    { type: GreenBalloon, count: Math.floor(round-2 ** 1.06)},
+    { type: YellowBalloon, count: Math.floor(round-2 ** 1.04)},
+    { type: PinkBalloon, count: Math.floor(round-2 ** 1.02)},
+  ];
+  console.log(balloons)
+  balloons.forEach(balloon => {
+    for (let i = 0; i < balloon.count; i++) {
+      enemies.push(new balloon.type());
+      enemyStart.y -= enemies[enemies.length - 1].spawnOffset;
+    }
+  });
+}
+
 function generateWave() {
   if (!roundStart) {return;}
-  if (round == 1) {
-    wave1();
-  }
-  if (round == 2) {
-    wave2();
-  }
-  if (round == 3) {
-    wave3();
+  switch (round) {
+    case 1:
+      wave1()
+      break;
+    case 2:
+      wave2()
+      break;
+    case 3:
+      wave3()
+      break;
+    case 4:
+      wave4()
+      break;
+    case 5:
+      wave5()
+      break;
+    default:
+      infiniteWaves()
+      break;
   }
 
   // add infinte wave gen after wave 10
@@ -398,30 +457,44 @@ canvas.addEventListener("click", handleClick, true);
 
 function handleClick() {
   if (Soldier.placing) {
-    if (!isTowerOnPath(selectedTower) && !isMonkeyOnAnotherMonkey(selectedTower)) {
+    if (!(selectedTower.rcolor == "red")) {
       Soldier.placing = false;
       selectedTower.isPlaced = true;
       document.getElementById("canvas").style.cursor = "default";
     }
   }
   if (CatapultMonkey.placing) {
-    if (!isTowerOnPath(selectedTower) && !isMonkeyOnAnotherMonkey(selectedTower)) {
+    if (!(selectedTower.rcolor == "red")) {
       CatapultMonkey.placing = false;
       selectedTower.isPlaced = true;
       document.getElementById("canvas").style.cursor = "default";
     }
   }
 }
+
 function isMonkeyOnAnotherMonkey(monkey) {
-  for (let i = 0; i < towers.length; i++) {
-    let tower = towers[i];
+  towers.forEach(tower => {
+    var dist = Math.sqrt(
+      (tower.x - selectedTower.x) ** 2 + (tower.y - selectedTower.y) ** 2
+    );
+    console.log(dist)
+    
+    if (dist < 25 && towers.length > 1 && dist > 0) {
+      selectedTower.rcolor = "red";
+    } 
+    
+  });
+
+  
+  
+  /*for (let i = 0; i < towers.length; i++) {
 
     let dist = Math.sqrt(
-      (tower.x - monkey.x) ** 2 + (tower.y - monkey.y) ** 2
+      (towers[i].x - selectedTower.x) ** 2 + (towers[i].y - selectedTower.y) ** 2
     );
     console.log(monkey.x + "mx")
-    console.log(tower.x + "tx")
-    //console.log(towers)
+    console.log(towers[i].x + "tx")
+    console.log(towers)
     console.log(dist)
     if (dist < 25 && towers.length > 1 ) {
       selectedTower.rcolor = "red";
@@ -430,7 +503,7 @@ function isMonkeyOnAnotherMonkey(monkey) {
     } else {
       return false;
     }
-  }
+  }*/
   
 }
 
@@ -694,13 +767,13 @@ class Bullet {
         // also makes so it wont give gold for multiple collissions when spike travels over balloon
         if (!enemy.hitBy.includes(this) || this.bulletType == "a") {
           if(enemy.health < this.damage) {
-            gold += 5 * enemy.health
+            gold += 3 * enemy.health
             enemy.health -= this.damage;
           } else {
             enemy.health -= this.damage;
             enemy.speed = updateBalloonSpeed(enemy.health)
             enemy.hitBy.push(this)
-            gold += 5 * this.damage;
+            gold += 3 * this.damage;
           }
         }
         
@@ -882,8 +955,8 @@ function changeUpgradeColor(color, firstId) {
 }
 
 TEST_BUTTON.addEventListener("click", function (event) {
-  if (gold >= 100) {
-    gold -= 100;
+  if (gold >= 150) {
+    gold -= 150;
     document.getElementById("gold").innerHTML = `Gold: ${gold}`;
     CatapultMonkey.placing = true;
     document.getElementById("canvas").style.cursor = "move";
