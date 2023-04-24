@@ -146,6 +146,96 @@ function wave5() {
   });
 }
 
+function wave6() {
+  enemies = [];
+  enemyStart.y = 0;
+
+  const balloons = [
+    { type: PinkBalloon, count: 3},
+    { type: GreenBalloon, count: 0 },
+    { type: YellowBalloon, count: 4 },
+  ];
+
+  balloons.forEach(balloon => {
+    for (let i = 0; i < balloon.count; i++) {
+      enemies.push(new balloon.type());
+      enemyStart.y -= enemies[enemies.length - 1].spawnOffset;
+    }
+  });
+}
+
+function wave7() {
+  enemies = [];
+  enemyStart.y = 0;
+
+  const balloons = [
+    { type: PinkBalloon, count: 10},
+    { type: GreenBalloon, count: 0 },
+    { type: YellowBalloon, count: 0 },
+  ];
+
+  balloons.forEach(balloon => {
+    for (let i = 0; i < balloon.count; i++) {
+      enemies.push(new balloon.type());
+      enemyStart.y -= enemies[enemies.length - 1].spawnOffset;
+    }
+  });
+}
+
+function wave8() {
+  enemies = [];
+  enemyStart.y = 0;
+
+  const balloons = [
+    { type: PinkBalloon, count: 4},
+    { type: GreenBalloon, count: 4 },
+    { type: YellowBalloon, count: 4 },
+  ];
+
+  balloons.forEach(balloon => {
+    for (let i = 0; i < balloon.count; i++) {
+      enemies.push(new balloon.type());
+      enemyStart.y -= enemies[enemies.length - 1].spawnOffset;
+    }
+  });
+}
+
+function wave9() {
+  enemies = [];
+  enemyStart.y = 0;
+
+  const balloons = [
+    { type: BlueBalloon, count: 10},
+    { type: GreenBalloon, count: 5 },
+    { type: YellowBalloon, count: 0 },
+  ];
+
+  balloons.forEach(balloon => {
+    for (let i = 0; i < balloon.count; i++) {
+      enemies.push(new balloon.type());
+      enemyStart.y -= enemies[enemies.length - 1].spawnOffset;
+    }
+  });
+}
+
+function wave10() {
+  enemies = [];
+  enemyStart.y = 0;
+
+  const balloons = [
+    { type: GreenBalloon, count: 3 },
+    { type: YellowBalloon, count: 5 },
+    { type: PinkBalloon, count: 15},
+  ];
+
+  balloons.forEach(balloon => {
+    for (let i = 0; i < balloon.count; i++) {
+      enemies.push(new balloon.type());
+      enemyStart.y -= enemies[enemies.length - 1].spawnOffset;
+    }
+  });
+}
+
 function infiniteWaves() {
   enemies = [];
   enemyStart.y = 0;
@@ -183,6 +273,21 @@ function generateWave() {
       break;
     case 5:
       wave5()
+      break;
+    case 6:
+      wave6()
+      break;
+    case 7:
+      wave7()
+      break;
+    case 8:
+      wave8()
+      break;
+    case 9:
+      wave9()
+      break;
+    case 10:
+      wave10()
       break;
     default:
       infiniteWaves()
@@ -955,8 +1060,8 @@ function changeUpgradeColor(color, firstId) {
 }
 
 TEST_BUTTON.addEventListener("click", function (event) {
-  if (gold >= 150) {
-    gold -= 150;
+  if (gold >= 500) {
+    gold -= 500;
     document.getElementById("gold").innerHTML = `Gold: ${gold}`;
     CatapultMonkey.placing = true;
     document.getElementById("canvas").style.cursor = "move";
