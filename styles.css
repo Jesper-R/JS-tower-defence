@@ -192,12 +192,13 @@ canvas{
   display: none;
 }
 
-@media only screen and (max-height: 720px) and (orientation: portrait) {
+@media only screen and (max-width: 720px) and (orientation: portrait) {
   *:not(body, #phone-alert, head, html){
     display: none;
   }
   #phone-alert {
     display: block;
+    font-size: 20vw;
   }
 }
 
@@ -237,10 +238,11 @@ canvas{
     display: flex;
     flex-direction: column;
     align-items: end;
+    margin-right: 10px;
   }
 
   .wrap svg {
-    width:  100px;
+    width:  120px;
   }
   .catapult-container {
     width: 200px;
@@ -258,7 +260,7 @@ canvas{
   }
 
   #soldier-button, #test-button {
-    width: 100px;
+    width: 120px;
     font-size: 10px;
     
   }
@@ -286,6 +288,8 @@ canvas{
   #start-button {
     position: absolute;
     top: 0;
+    margin-left: calc(50vw - 100px ); 
+    
   }
   #test {
     position: absolute;

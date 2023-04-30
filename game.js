@@ -6,7 +6,7 @@ const SW = canvas.width;
 const SH = canvas.height;
 const SOLDIER_BUTTON = document.getElementById("soldier-button");
 const TEST_BUTTON = document.getElementById("test-button");
-const TEST = document.getElementById("test");
+
 const RESTART_BUTTON = document.getElementById("restart-button");
 const UPGRADE_MONKEY_BUTTON = document.getElementById("upgrade-monkey-button");
 const START_BUTTON = document.getElementById("start-button")
@@ -516,9 +516,7 @@ RESTART_BUTTON.addEventListener("click", function (event) {
   restart();
 });
 var elem = document.documentElement;
-TEST.addEventListener("click", function (event) {
-  openFullscreen();
-});
+
 
 function openFullscreen() {
   if (elem.requestFullscreen) {
@@ -556,6 +554,7 @@ function restart() {
 START_BUTTON.addEventListener("click", function (event) {
   started = true;
   START_BUTTON.style.display = "none"
+  openFullscreen();
 });
 
 canvas.addEventListener("mousemove", function (event) {
