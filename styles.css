@@ -187,5 +187,20 @@ canvas{
 }
 
 @media only screen and (max-height: 720px) and (orientation: landscape) {
-  
+  h1 {
+    font-size: 50px;
+  }
+
+  .game-info div {
+    margin-left: 10px
+  }
+
+  #lives, #current-round, #gold {
+    font-size: 30px;
+  }
+
+  #canvas {
+    width: 500px;
+  }
+
 }
