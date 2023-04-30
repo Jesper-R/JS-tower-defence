@@ -201,6 +201,50 @@ canvas{
 
   #canvas {
     width: 500px;
+    margin: auto;
   }
+
+  .soldier-wrapper {
+
+  }
+
+  .container {
+    width: 200px;
+  }
+  .catapult-container {
+    width: 200px;
+  }
+
+  .placeholder {
+    width: 300px;
+  }
+
+  .game-info {
+    width: 300px;
+  }
+
+  #soldier-button, #test-button {
+    width: 150px;
+    font-size: 15px;
+  }
+  .test {
+    
+  }
+  .wrapper {
+    display: block;
+  }
+  .game-info{
+    flex-direction: row;
+    width: 100vw;
+    justify-content: space-around;
+    margin: auto;
+  }
+
+  .soldier-wrapper {
+    flex-wrap: nowrap;
+    width: 100vw;
+  }
+
+
 
 }
