@@ -21,41 +21,51 @@
   </audio>
 
   <div class="wrapper">
+    
+      
+    
     <div class="placeholder">
-      <div class="soldier-wrapper">
+      
         <div class="container">
-          <div class="test">
+          
+          <div class="wrap">
             <svg id="upgrade-monkey-button" viewBox="0 0 24 24" fill="none" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path opacity="0.1" d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" fill="#323232"></path> <path id="6" d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="green" stroke-width="2"></path> <path id="4" d="M12 8L12 16" stroke="green" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path id="5" d="M15 11L12.087 8.08704V8.08704C12.039 8.03897 11.961 8.03897 11.913 8.08704V8.08704L9 11" stroke="green" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
             <p id="dart-upgrade-cost" class="cost">50g</p>
           </div>
           
           
-          <div class="test">
+          <div class="wrap">
             <button id="soldier-button">Dart-monkey (50 g)</button> 
             <p>Target Type: First</p>
           </div>
           
           
         </div>
-        
-        <div class="catapult-container">
+   
+        <div class="container">
+          <!--
           <div class="test">
-            <!--<img src="upgrade.png" alt="upgrade" id="upgrade" width="64" height="64">-->
             <svg viewBox="0 0 24 24" fill="none" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path opacity="0.1" d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" fill="#323232"></path> <path id="3" d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="red" stroke-width="2"></path> <path id="1" d="M12 8L12 16" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path id="2" d="M15 11L12.087 8.08704V8.08704C12.039 8.03897 11.961 8.03897 11.913 8.08704V8.08704L9 11" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-            
             <p class="cost">X</p>
-            
+          </div>-->
+          <div class="wrap">
+            <svg viewBox="0 0 24 24" fill="none" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path opacity="0.1" d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" fill="#323232"></path> <path id="3" d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="red" stroke-width="2"></path> <path id="1" d="M12 8L12 16" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path id="2" d="M15 11L12.087 8.08704V8.08704C12.039 8.03897 11.961 8.03897 11.913 8.08704V8.08704L9 11" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+            <p class="cost">X</p>
           </div>
-
-          <div class="test">
+          
+          <div class="wrap">
             <button id="test-button">Catapult-monkey (500g)</button>
             <p>Target Type: Last</p>
           </div>
+       
         </div>
         
-      </div>
     </div>
+
     <canvas id="canvas" width="800" height="600"></canvas>
+    
+
+
     <div class="game-info">
       <div id="lives">HP: 100</div>
       <div id="current-round">Round: 1</div>
