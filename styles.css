@@ -171,3 +171,21 @@ canvas{
   width: 70px;
   height: 70px;
 }
+
+
+#phone-alert {
+  display: none;
+}
+
+@media only screen and (orientation: portrait) {
+  *:not(body, #phone-alert, head, html){
+    display: none;
+  }
+  #phone-alert {
+    display: block;
+  }
+}
+
+@media only screen and (max-height: 720px) and (orientation: landscape) {
+  
+}
