@@ -177,7 +177,7 @@ canvas{
   display: none;
 }
 
-@media only screen and (orientation: portrait) {
+@media only screen and (max-height: 720px) and (orientation: portrait) {
   *:not(body, #phone-alert, head, html){
     display: none;
   }
