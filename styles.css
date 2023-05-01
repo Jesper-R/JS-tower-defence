@@ -223,7 +223,9 @@ canvas{
 
   #canvas {
     
-    height: 100vh;
+    height: 300px;
+    width: 400px;
+    
     
   }
 

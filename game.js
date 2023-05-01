@@ -554,15 +554,60 @@ function restart() {
 START_BUTTON.addEventListener("click", function (event) {
   started = true;
   START_BUTTON.style.display = "none"
-  openFullscreen();
+
+  //openFullscreen();
+  
 });
 
 canvas.addEventListener("mousemove", function (event) {
   // Check if the user has selected a tower to place
+    // Get the scaled canvas size
+  const canvasWidth = canvas.width;
+  const canvasHeight = canvas.height;
+
+  // Get the actual viewport size
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+
+  // Calculate the scaling factor
+  const scaleX = canvasWidth / viewportWidth;
+  const scaleY = canvasHeight / viewportHeight;
+
+  // Get the mouse/touch coordinates
+  const x = event.clientX || event.touches[0].clientX;
+  const y = event.clientY || event.touches[0].clientY;
+
+  // Convert the coordinates to the unscaled canvas coordinates
+  const unscaledX = x * scaleX;
+  const unscaledY = y * scaleY;
+  
   if (Soldier.placing || CatapultMonkey.placing) {
+
+    var rect = canvas.getBoundingClientRect();
+    var sx = canvas.scrollWidth / 480;
+    var sy = canvas.scrollHeight / 460;
+      
+      
+    xll = (event.clientX - rect.left) / sx
+    yll = (event.clientY - rect.top) / sy
+    //winX: evt.clientX
+    //winY: evt.clientY
     // Update the position of the selected tower to follow the user's mouse pointer
-    selectedTower.x = event.clientX - canvas.getBoundingClientRect().left;
-    selectedTower.y = event.clientY - canvas.getBoundingClientRect().top;
+    console.log(this.clientWidth + "width")
+    if (this.clientWidth <= 400) {
+      selectedTower.x = (event.clientX - canvas.getBoundingClientRect().left) * 2;
+      selectedTower.y = (event.clientY - canvas.getBoundingClientRect().top) * 2;
+    } else {
+      selectedTower.x = (event.clientX - canvas.getBoundingClientRect().left);
+      selectedTower.y = (event.clientY - canvas.getBoundingClientRect().top);
+    }
+    
+    console.log(event.clientX + "client")
+    console.log(event.clientX - canvas.getBoundingClientRect().left + "client - rect")
+    console.log(selectedTower.x + "canvas")
+    console.log(event.clientX - 143 + "true client")
+    //console.log("phoneX: " + event.touches[0].clientX)
+    
     
     isTowerOnPath(selectedTower);
     isMonkeyOnAnotherMonkey(selectedTower)
@@ -572,6 +617,7 @@ canvas.addEventListener("mousemove", function (event) {
 canvas.addEventListener("click", handleClick, true);
 
 function handleClick() {
+ 
   if (Soldier.placing) {
     if (!(selectedTower.rcolor == "red")) {
       Soldier.placing = false;
