@@ -30,7 +30,7 @@ h1{
 
 canvas{
   
-  display: block;
+  
   
 
   
@@ -236,11 +236,11 @@ canvas{
   .container {
     
     margin: 0;
-    scale: 1;
     display: flex;
     flex-direction: column;
     align-items: end;
     margin-right: 10px;
+    min-height: 100px;
   }
 
   .wrap svg {
@@ -253,12 +253,15 @@ canvas{
   
   .placeholder {
     width: 300px;
-
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 20px;
   }
 
   .game-info {
     width: 300px;
-    
+    justify-content: center;
   }
 
   #soldier-button, #test-button {
@@ -277,7 +280,6 @@ canvas{
     flex-direction: column;
     width: 300px;
     
-    
   }
   .wrap p {
     font-size: 10px;
@@ -290,7 +292,8 @@ canvas{
   #start-button {
     position: absolute;
     top: 0;
-    margin-left: calc(50vw - 100px ); 
+    margin-left: calc(50vw - 100px );
+    margin-top: calc(50vh - 30px);
     
   }
   #test {
@@ -299,18 +302,42 @@ canvas{
   }
 
   #dead {
+    
+    font-size: 50px;
     position: absolute;
     top: 0;
-    margin-top: 50px;
-    font-size: 50px;
+    margin-left: calc(50vw - calc(143.8/2));
+    margin-top: calc(50vh - 37.5px);
   }
   #restart-button{
-    position: absolute;
     top: 0;
-    margin-top: 200px;
+    left: 0;
+    position: absolute;
+    
+    margin-left: calc(50vw);
+    margin-top: calc(50vh + 30px);
   }
   * {
     border: none;
   }
+  
+  .wrapper {
+    height: 100vh;
+  }
 
+  canvas {
+    
+  }
+  
+  .divv {
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .wrap svg {
+    width:  120px;
+    height: 50px;
+  }
 }
