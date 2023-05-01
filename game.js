@@ -497,12 +497,14 @@ SOLDIER_BUTTON.addEventListener("click", function (event) {
     gold -= 50;
     document.getElementById("gold").innerHTML = `Gold: ${gold}`;
     Soldier.placing = true;
+    SOLDIER_BUTTON.style.pointerEvents = "none";
+    TEST_BUTTON.style.pointerEvents = "none";
     document.getElementById("canvas").style.cursor = "move";
     var newTower = new Soldier(
       event.clientX - canvas.getBoundingClientRect().left,
       event.clientY - canvas.getBoundingClientRect().top,
-      20,
-      10,
+      0,
+      0,
       100,
       monkey_img
     );
@@ -561,38 +563,8 @@ START_BUTTON.addEventListener("click", function (event) {
 });
 
 canvas.addEventListener("mousemove", function (event) {
-  // Check if the user has selected a tower to place
-    // Get the scaled canvas size
-  const canvasWidth = canvas.width;
-  const canvasHeight = canvas.height;
-
-  // Get the actual viewport size
-  const viewportWidth = window.innerWidth;
-  const viewportHeight = window.innerHeight;
-
-  // Calculate the scaling factor
-  const scaleX = canvasWidth / viewportWidth;
-  const scaleY = canvasHeight / viewportHeight;
-
-  // Get the mouse/touch coordinates
-  const x = event.clientX || event.touches[0].clientX;
-  const y = event.clientY || event.touches[0].clientY;
-
-  // Convert the coordinates to the unscaled canvas coordinates
-  const unscaledX = x * scaleX;
-  const unscaledY = y * scaleY;
   
   if (Soldier.placing || CatapultMonkey.placing) {
-
-    var rect = canvas.getBoundingClientRect();
-    var sx = canvas.scrollWidth / 480;
-    var sy = canvas.scrollHeight / 460;
-      
-      
-    xll = (event.clientX - rect.left) / sx
-    yll = (event.clientY - rect.top) / sy
-    //winX: evt.clientX
-    //winY: evt.clientY
 
     console.log(this.clientWidth + "clientw")
     console.log(canvas.width + "canbasww")
@@ -643,6 +615,8 @@ function handleClick() {
       document.getElementById("canvas").style.cursor = "default";
     }
   }
+  SOLDIER_BUTTON.style.pointerEvents = "all";
+  TEST_BUTTON.style.pointerEvents = "all";
 }
 
 function isMonkeyOnAnotherMonkey(monkey) {

@@ -259,9 +259,11 @@ main {
   }
   #dart-monkey-button, #catapult-monkey-button {
     width: 15vw;
+    height: 10vh;
   }
   .tower-box svg {
     width: 15vw;
+    height: 10vh;
   }
   #right-container div {
     font-size: 3vw;
