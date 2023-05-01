@@ -1,199 +1,158 @@
-@import url('https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Inter:wght@700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Inter:wght@700&display=swap");
 
-*{
+* {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  
 }
-* {
-  border: dashed red 1px;
-}
-.wrap {
-  display: block;
-}
+
 body {
-  background-color:rgb(31, 31, 31);
-  
+  background-color: rgb(31, 31, 31);
 }
 
-.container {
-  margin-left: auto;
-}
-
-h1{
+h1 {
   text-align: center;
   font-size: 100px;
-
-  font-family: 'Bungee Spice';
+  font-family: "Bungee Spice";
 }
 
-canvas{
-  
-  
-  
-
-  
-}
-#lives, #current-round, #gold{
-  font-family: 'Bungee Spice';
+#lives,
+#current-round,
+#gold {
+  font-family: "Bungee Spice";
   font-size: 40px;
-}
-
-#current-round {
-  /*position: absolute;
-  right: 0;*/
 }
 
 #death-screen {
   display: none;
 }
 
-#dead{
-  
+#dead {
   position: absolute;
   left: 50%;
   top: 370px;
-  transform: translate(-50%,-50%);
-  font-family: 'Bungee Spice';
+  transform: translate(-50%, -50%);
+  font-family: "Bungee Spice";
   font-size: 200px;
-  
 }
 
 #restart-button {
   position: absolute;
   left: 50%;
   top: calc(370px + 150px);
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
 }
 
-
-.wrapper {
-  display: flex;
-  justify-content: center;
+#dart-monkey-button,
+#catapult-monkey-button,
+#restart-button,
+#start-button {
+  height: 60px;
+  width: 200px;
+  border-radius: 10px;
+  background-color: orangered;
+  color: #1d1d1f;
+  font-weight: bold;
+  font-size: 17px;
+  border: 0px;
+  font-family: "Inter";
 }
 
-
-.game-info{
-  width: 400px;
-  display: flex;
-  flex-direction: column;
-  
-  gap: 30px;
-  
-
-}
-.game-info div{
-  margin-left: 75px;
-  
-  
-
-}
-.wrap p {
-  font-family: 'Inter';
-  color: white;
-  text-align: center;
-}
-
-.placeholder {
-  width: 400px;
-  /*margin-right: 50px;*/
-}
-.soldier-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-  flex-wrap: wrap;
-  width: 350px;
-  
-}
-
-#soldier-button, #test-button, #restart-button, #start-button {
- height: 60px; 
- width: 200px;
- border-radius: 10px;
- background-color: orangered;
- color:#1D1D1F;
- font-weight: bold;
- font-size: 17px;
- border: 0px;
- font-family: 'Inter';
- 
-}
-#soldier-button:disabled, #test-button:disabled {
+#dart-monkey-button:disabled,
+#catapult-monkey-button:disabled {
   background-color: rgba(163, 60, 29, 0.473);
 }
 
-#soldier-button:hover, #test-button:hover, #restart-button:hover, #start-button:hover{
+#dart-monkey-button:hover,
+#catapult-monkey-button:hover,
+#restart-button:hover,
+#start-button:hover {
   background-color: brown;
   cursor: pointer;
 }
 
-#soldier-button:active, #restart-button:active, #test-button:active, #start-button:active{
+#dart-monkey-button:active,
+#restart-button:active,
+#catapult-monkey-button:active,
+#start-button:active {
   background-color: darkred;
 }
 
 #start-button {
   margin-left: calc(50% - 125px);
   margin-top: 20px;
-  
 }
 
+main {
+  display: flex;
+  justify-content: center;
+}
+
+#left-container {
+  width: 400px;
+}
+
+.soldier-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  width: 350px;
+}
 
 .soldier-wrapper p {
   margin-top: 10px;
-  font-family: 'Inter';
+  font-family: "Inter";
   color: #f5f5f7;
-  
 }
 
-.container, .catapult-container {
+.tower {
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   justify-content: end;
   margin-right: 75px;
-}
-
-.catapult-container{
   margin-top: 40px;
+  margin-left: auto;
 }
 
-.test {
+.tower-box {
+  display: block;
+}
+
+
+
+.tower-box svg {
+  margin-right: 20px;
+}
+.cost {
+  margin-right: 20px;
+}
+.tower-box span {
+  display: block;
+  font-family: "Inter";
+  color: white;
+  text-align: center;
+}
+
+#right-container {
+  width: 400px;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  width: 200px;
-}
-.test svg {
-  position: absolute;
-  top: -5px;
+  flex-direction: column;
+  gap: 30px;
 }
 
-.test .cost {
-  
-  position: relative;
-  top: 30;
-  left: 0;
-  right: 0;
-  bottom: 0;
+#right-container div {
+  margin-left: 75px;
 }
-
-.test svg:hover {
-  scale: 1.2;
-  cursor: pointer;
-  width: 70px;
-  height: 70px;
-}
-
 
 #phone-alert {
   display: none;
 }
 
 @media only screen and (max-width: 720px) and (orientation: portrait) {
-  *:not(body, #phone-alert, head, html){
+  *:not(body, #phone-alert, head, html) {
     display: none;
   }
   #phone-alert {
@@ -203,38 +162,31 @@ canvas{
 }
 
 @media only screen and (max-height: 720px) and (orientation: landscape) {
-
-  * {
-    border: dashed red 1px;
-  }
-
   h1 {
     display: none;
   }
 
-  .game-info div {
-    margin-left: 10px
+  #right-container div {
+    margin-left: 10px;
   }
 
-  #lives, #current-round, #gold {
+  #lives,
+  #current-round,
+  #gold {
     font-size: 20px;
     white-space: nowrap;
   }
 
   #canvas {
-    
     height: 300px;
     width: 400px;
-    
-    
   }
 
   .soldier-wrapper {
     display: flex;
   }
 
-  .container {
-    
+  .tower {
     margin: 0;
     display: flex;
     flex-direction: column;
@@ -243,15 +195,12 @@ canvas{
     min-height: 100px;
   }
 
-  .wrap svg {
-    width:  120px;
-  }
-  .catapult-container {
-    width: 200px;
+  .tower-box svg {
+    width: 120px;
     margin: 0;
   }
-  
-  .placeholder {
+
+  #left-container {
     width: 300px;
     display: flex;
     flex-direction: column;
@@ -259,42 +208,38 @@ canvas{
     row-gap: 20px;
   }
 
-  .game-info {
+  #right-container {
     width: 300px;
     justify-content: center;
   }
 
-  #soldier-button, #test-button {
+  #dart-monkey-button,
+  #catapult-monkey-button {
     width: 120px;
     font-size: 10px;
-    
   }
-  .test {
-    
-  }
-  .wrapper {
+
+  main {
     display: flex;
     justify-content: center;
   }
-  .game-info{
+  #right-container {
     flex-direction: column;
     width: 300px;
-    
   }
-  .wrap p {
+  .tower-box span {
+    display: block;
     font-size: 10px;
   }
 
   .soldier-wrapper {
     flex-wrap: nowrap;
-    
   }
   #start-button {
     position: absolute;
     top: 0;
-    margin-left: calc(50vw - 100px );
+    margin-left: calc(50vw - 100px);
     margin-top: calc(50vh - 30px);
-    
   }
   #test {
     position: absolute;
@@ -302,42 +247,36 @@ canvas{
   }
 
   #dead {
-    
     font-size: 50px;
     position: absolute;
     top: 0;
-    margin-left: calc(50vw - calc(143.8/2));
+    margin-left: calc(50vw - calc(143.8 / 2));
     margin-top: calc(50vh - 37.5px);
   }
-  #restart-button{
+  #restart-button {
     top: 0;
     left: 0;
     position: absolute;
-    
+
     margin-left: calc(50vw);
     margin-top: calc(50vh + 30px);
   }
-  * {
-    border: none;
-  }
-  
-  .wrapper {
+
+  main {
     height: 100vh;
   }
 
-  canvas {
-    
-  }
-  
-  .divv {
-    
+  #middle-container {
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  .wrap svg {
-    width:  120px;
+  .tower-box svg {
+    width: 120px;
     height: 50px;
+  }
+  .cost {
+    margin: 0;
   }
 }

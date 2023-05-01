@@ -1,97 +1,68 @@
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tower Defence</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src = "game.js" defer></script>
-  <script src = "orientation-listener.js" defer></script>
-</head>
-<body>
-  <h1 id="phone-alert">Turn your phone!</h1>
-  <h1>Tower Defence</h1>
-  <audio id="main-music" loop>
-    <source src="audio/main-music.mp3" type="audio/mpeg">
-  </audio>
-  <audio id="swing-audio">
-    <source src="audio/swing.mp3" type="audio/mpeg">
-  </audio>
-  <audio id ="pop-audio">
-    <source src="audio/pop.mp3" type="audio/mpeg">
-  </audio>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tower Defence</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="game.js" defer></script>
+  </head>
+  <body>
+    <h1 id="phone-alert">Turn your phone!</h1>
+    <h1>Tower Defence</h1>
+    <audio id="main-music" loop>
+      <source src="audio/main-music.mp3" type="audio/mpeg" />
+    </audio>
+    <audio id="swing-audio">
+      <source src="audio/swing.mp3" type="audio/mpeg" />
+    </audio>
+    <audio id="pop-audio">
+      <source src="audio/pop.mp3" type="audio/mpeg" />
+    </audio>
 
-  <div class="wrapper">
-    
-      
-    
-    <div class="placeholder">
-      
-        <div class="container">
-          
-          <div class="wrap">
-            <svg id="upgrade-monkey-button" viewBox="0 0 24 24" fill="none" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path opacity="0.1" d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" fill="#323232"></path> <path id="6" d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="green" stroke-width="2"></path> <path id="4" d="M12 8L12 16" stroke="green" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path id="5" d="M15 11L12.087 8.08704V8.08704C12.039 8.03897 11.961 8.03897 11.913 8.08704V8.08704L9 11" stroke="green" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-            <p id="dart-upgrade-cost" class="cost">50g</p>
+    <main>
+      <section id="left-container">
+        <div class="tower">
+          <div class="tower-box">
+            <svg id="upgrade-monkey-button" viewBox="0 0 24 24" fill="none" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier"stroke-linecap="round"stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path opacity="0.1"d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"fill="#323232"></path><path id="6"d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"stroke="green"stroke-width="2"></path><path id="4"d="M12 8L12 16"stroke="green"stroke-width="2"stroke-linecap="round"stroke-linejoin="round"></path><path id="5"d="M15 11L12.087 8.08704V8.08704C12.039 8.03897 11.961 8.03897 11.913 8.08704V8.08704L9 11"stroke="green"stroke-width="2"stroke-linecap="round"stroke-linejoin="round"></path></g></svg>
+            <span id="dart-upgrade-cost" class="cost">50g</span>
           </div>
-          
-          
-          <div class="wrap">
-            <button id="soldier-button">Dart-monkey (50 g)</button> 
-            <p>Target Type: First</p>
+
+          <div class="tower-box">
+            <button id="dart-monkey-button">Dart-monkey (50 g)</button>
+            <span>Target Type: First</span>
           </div>
-          
-          
         </div>
-   
-        <div class="container">
-          <!--
-          <div class="test">
-            <svg viewBox="0 0 24 24" fill="none" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path opacity="0.1" d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" fill="#323232"></path> <path id="3" d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="red" stroke-width="2"></path> <path id="1" d="M12 8L12 16" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path id="2" d="M15 11L12.087 8.08704V8.08704C12.039 8.03897 11.961 8.03897 11.913 8.08704V8.08704L9 11" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-            <p class="cost">X</p>
-          </div>-->
-          <div class="wrap">
-            <svg viewBox="0 0 24 24" fill="none" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path opacity="0.1" d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" fill="#323232"></path> <path id="3" d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="red" stroke-width="2"></path> <path id="1" d="M12 8L12 16" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path id="2" d="M15 11L12.087 8.08704V8.08704C12.039 8.03897 11.961 8.03897 11.913 8.08704V8.08704L9 11" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-            <p class="cost">X</p>
+
+        <div class="tower">
+          <div class="tower-box">
+            <svg viewBox="0 0 24 24" fill="none" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path opacity="0.1"d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"fill="#323232"></path><path id="3"d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"stroke="red"stroke-width="2"></path><path id="1"d="M12 8L12 16"stroke="red"stroke-width="2"stroke-linecap="round"stroke-linejoin="round"></path><path id="2"d="M15 11L12.087 8.08704V8.08704C12.039 8.03897 11.961 8.03897 11.913 8.08704V8.08704L9 11"stroke="red"stroke-width="2"stroke-linecap="round"stroke-linejoin="round"></path></g></svg>
+            <span class="cost">X</span>
           </div>
-          
-          <div class="wrap">
-            <button id="test-button">Catapult-monkey (500g)</button>
-            <p>Target Type: Last</p>
+
+          <div class="tower-box">
+            <button id="catapult-monkey-button">Catapult-monkey (500g)</button>
+            <span>Target Type: Last</span>
           </div>
-       
         </div>
-        
+      </section>
+      
+      <section id="middle-container">
+        <canvas id="canvas" width="800" height="600"></canvas>
+      </section>
+
+      <section id="right-container">
+        <div id="lives">HP: 100</div>
+        <div id="current-round">Round: 1</div>
+        <div id="gold">Gold: 100</div>
+      </section>
+    </main>
+
+    <div id="death-screen">
+      <div id="dead">DEAD</div>
+      <button id="restart-button">Go again</button>
     </div>
-    <div class="divv">
-      <canvas id="canvas" width="800" height="600"></canvas>
-    </div>
-    
-    
 
-
-    <div class="game-info">
-      <div id="lives">HP: 100</div>
-      <div id="current-round">Round: 1</div>
-      <div id="gold">Gold: 100</div>
-    </div>
-  </div>
-  
-  
-  
-  
-    
-  
-  
-
-
-
-  <div id="death-screen">
-    <div id="dead">DEAD</div>
-    <button id="restart-button">Go again</button>
-  </div>
-  
-  <button id ="start-button">Start</button>
-  
-  
-</body>
+    <button id="start-button">Start</button>
+  </body>
 </html>

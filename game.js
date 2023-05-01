@@ -4,8 +4,8 @@ var context = canvas.getContext("2d");
 
 const SW = canvas.width;
 const SH = canvas.height;
-const SOLDIER_BUTTON = document.getElementById("soldier-button");
-const TEST_BUTTON = document.getElementById("test-button");
+const SOLDIER_BUTTON = document.getElementById("dart-monkey-button");
+const TEST_BUTTON = document.getElementById("catapult-monkey-button");
 
 const RESTART_BUTTON = document.getElementById("restart-button");
 const UPGRADE_MONKEY_BUTTON = document.getElementById("upgrade-monkey-button");
@@ -554,9 +554,10 @@ function restart() {
 START_BUTTON.addEventListener("click", function (event) {
   started = true;
   START_BUTTON.style.display = "none"
-
-  openFullscreen();
-  
+  console.log(canvas.clientWidth)
+  if (canvas.clientWidth <= 400) {
+    openFullscreen();
+  }
 });
 
 canvas.addEventListener("mousemove", function (event) {
