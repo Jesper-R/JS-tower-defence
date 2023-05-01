@@ -555,7 +555,7 @@ START_BUTTON.addEventListener("click", function (event) {
   started = true;
   START_BUTTON.style.display = "none"
 
-  //openFullscreen();
+  openFullscreen();
   
 });
 
