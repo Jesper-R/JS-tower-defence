@@ -109,6 +109,8 @@ main {
 
 .tower-box svg {
   margin-right: 20px;
+  height: 60px;
+  width: 60px;
 }
 
 .tower-box span {
@@ -116,6 +118,7 @@ main {
   font-family: "Inter";
   color: white;
   text-align: center;
+  
 }
 
 .cost {
@@ -246,6 +249,11 @@ main {
 }
 
 @media only screen and (min-width: 1080px) and (max-width: 1440px) and (orientation: landscape) {
+  h1 {
+    display: block;
+    position: absolute;
+    width: 100vw;
+  }
   #canvas {
     height: 60vh;
   }
@@ -260,5 +268,11 @@ main {
   }
   #left-container button, #left-container span {
     font-size: 1.5vw;
+  }
+  #dead {
+    font-size: 12vw;
+  }
+  #restart-button {
+    margin-top: 60vh;
   }
 }
