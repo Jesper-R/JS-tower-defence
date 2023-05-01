@@ -169,7 +169,10 @@ main {
   #dart-monkey-button,
   #catapult-monkey-button {
     width: 15vw;
-    font-size: 10px;
+    font-size: 1.5vw;
+  }
+  #left-container span {
+    font-size: 1.5vw;
   }
   .tower {
     margin: 0;
@@ -254,5 +257,8 @@ main {
   }
   #right-container div {
     font-size: 3vw;
+  }
+  #left-container button, #left-container span {
+    font-size: 1.5vw;
   }
 }

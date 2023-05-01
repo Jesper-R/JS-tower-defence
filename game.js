@@ -555,7 +555,7 @@ START_BUTTON.addEventListener("click", function (event) {
   started = true;
   START_BUTTON.style.display = "none"
   console.log(canvas.clientWidth)
-  if (canvas.clientWidth <= 400) {
+  if (canvas.clientWidth < 800) {
     openFullscreen();
   }
 });
