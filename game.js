@@ -593,15 +593,25 @@ canvas.addEventListener("mousemove", function (event) {
     yll = (event.clientY - rect.top) / sy
     //winX: evt.clientX
     //winY: evt.clientY
+
+    console.log(this.clientWidth + "clientw")
+    console.log(canvas.width + "canbasww")
+
+    var cxase = 800 / this.clientWidth
+    var yxase = 600 / this.clientHeight
+
     // Update the position of the selected tower to follow the user's mouse pointer
     console.log(this.clientWidth + "width")
-    if (this.clientWidth <= 400) {
-      selectedTower.x = (event.clientX - canvas.getBoundingClientRect().left) * 2;
-      selectedTower.y = (event.clientY - canvas.getBoundingClientRect().top) * 2;
+    selectedTower.x = (event.clientX - canvas.getBoundingClientRect().left) * cxase;
+    selectedTower.y = (event.clientY - canvas.getBoundingClientRect().top) * yxase;
+
+    /*if (this.clientWidth <= 700) {
+      selectedTower.x = (event.clientX - canvas.getBoundingClientRect().left) * cxase;
+      selectedTower.y = (event.clientY - canvas.getBoundingClientRect().top) * yxase;
     } else {
       selectedTower.x = (event.clientX - canvas.getBoundingClientRect().left);
       selectedTower.y = (event.clientY - canvas.getBoundingClientRect().top);
-    }
+    }*/
     
     console.log(event.clientX + "client")
     console.log(event.clientX - canvas.getBoundingClientRect().left + "client - rect")

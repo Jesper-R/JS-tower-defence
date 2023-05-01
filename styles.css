@@ -16,6 +16,11 @@ h1 {
   font-family: "Bungee Spice";
 }
 
+main {
+  display: flex;
+  justify-content: center;
+}
+
 #lives,
 #current-round,
 #gold {
@@ -83,27 +88,8 @@ h1 {
   margin-top: 20px;
 }
 
-main {
-  display: flex;
-  justify-content: center;
-}
-
 #left-container {
   width: 400px;
-}
-
-.soldier-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-  flex-wrap: wrap;
-  width: 350px;
-}
-
-.soldier-wrapper p {
-  margin-top: 10px;
-  font-family: "Inter";
-  color: #f5f5f7;
 }
 
 .tower {
@@ -121,19 +107,19 @@ main {
   display: block;
 }
 
-
-
 .tower-box svg {
   margin-right: 20px;
 }
-.cost {
-  margin-right: 20px;
-}
+
 .tower-box span {
   display: block;
   font-family: "Inter";
   color: white;
   text-align: center;
+}
+
+.cost {
+  margin-right: 20px;
 }
 
 #right-container {
@@ -151,7 +137,7 @@ main {
   display: none;
 }
 
-@media only screen and (max-width: 720px) and (orientation: portrait) {
+@media only screen and (max-width: 1080px) and (orientation: portrait) {
   *:not(body, #phone-alert, head, html) {
     display: none;
   }
@@ -161,43 +147,15 @@ main {
   }
 }
 
-@media only screen and (max-height: 720px) and (orientation: landscape) {
+@media only screen and (max-width: 1440px) and (orientation: landscape) {
+  main {
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+  }
+
   h1 {
     display: none;
-  }
-
-  #right-container div {
-    margin-left: 10px;
-  }
-
-  #lives,
-  #current-round,
-  #gold {
-    font-size: 20px;
-    white-space: nowrap;
-  }
-
-  #canvas {
-    height: 300px;
-    width: 400px;
-  }
-
-  .soldier-wrapper {
-    display: flex;
-  }
-
-  .tower {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: end;
-    margin-right: 10px;
-    min-height: 100px;
-  }
-
-  .tower-box svg {
-    width: 120px;
-    margin: 0;
   }
 
   #left-container {
@@ -206,44 +164,65 @@ main {
     flex-direction: column;
     justify-content: center;
     row-gap: 20px;
+    align-items: center;
   }
-
-  #right-container {
-    width: 300px;
-    justify-content: center;
-  }
-
   #dart-monkey-button,
   #catapult-monkey-button {
-    width: 120px;
+    width: 15vw;
     font-size: 10px;
   }
-
-  main {
+  .tower {
+    margin: 0;
     display: flex;
-    justify-content: center;
-  }
-  #right-container {
     flex-direction: column;
-    width: 300px;
+    align-items: end;
+    margin-right: 10px;
+    min-height: 100px;
+  }
+  .tower-box svg {
+    width: 15vw;
+    height: 50px;
+    margin: 0;
+  }
+  .cost {
+    margin: 0;
   }
   .tower-box span {
     display: block;
     font-size: 10px;
   }
 
-  .soldier-wrapper {
-    flex-wrap: nowrap;
+  #middle-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
+  #canvas {
+    height: 90vh;
+  }
+
+  #right-container {
+    width: 300px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  #right-container div {
+    margin-left: 10px;
+    font-size: 3vw;
+  }
+  #lives,
+  #current-round,
+  #gold {
+    font-size: 20px;
+    white-space: nowrap;
+  }
+
   #start-button {
     position: absolute;
     top: 0;
     margin-left: calc(50vw - 100px);
     margin-top: calc(50vh - 30px);
-  }
-  #test {
-    position: absolute;
-    top: 0;
   }
 
   #dead {
@@ -253,30 +232,27 @@ main {
     margin-left: calc(50vw - calc(143.8 / 2));
     margin-top: calc(50vh - 37.5px);
   }
+
   #restart-button {
     top: 0;
     left: 0;
     position: absolute;
-
     margin-left: calc(50vw);
     margin-top: calc(50vh + 30px);
   }
+}
 
-  main {
-    height: 100vh;
+@media only screen and (min-width: 1080px) and (max-width: 1440px) and (orientation: landscape) {
+  #canvas {
+    height: 60vh;
   }
-
-  #middle-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  #dart-monkey-button, #catapult-monkey-button {
+    width: 15vw;
   }
-
   .tower-box svg {
-    width: 120px;
-    height: 50px;
+    width: 15vw;
   }
-  .cost {
-    margin: 0;
+  #right-container div {
+    font-size: 3vw;
   }
 }
