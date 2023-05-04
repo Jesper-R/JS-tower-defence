@@ -6,7 +6,6 @@ const SW = canvas.width;
 const SH = canvas.height;
 const SOLDIER_BUTTON = document.getElementById("dart-monkey-button");
 const TEST_BUTTON = document.getElementById("catapult-monkey-button");
-
 const RESTART_BUTTON = document.getElementById("restart-button");
 const UPGRADE_MONKEY_BUTTON = document.getElementById("upgrade-monkey-button");
 const START_BUTTON = document.getElementById("start-button")
@@ -1293,4 +1292,4 @@ function play() {
   
 }
 
-setInterval(play, 1000 / 60);
+setInterval(play, 1000 / 120);
