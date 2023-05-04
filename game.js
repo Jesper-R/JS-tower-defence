@@ -1160,12 +1160,6 @@ UPGRADE_MONKEY_BUTTON.addEventListener("click", function (event) {
 });
 
 var test = 0;
-function renderBullets() {}
-function shoot() {}
-
-setInterval(shoot, 5000);
-
-setInterval(renderBullets, 1000 / 60);
 
 shooting = true;
 
@@ -1246,7 +1240,6 @@ function play() {
 
   update();
   
-  renderBullets();
 
   
 
