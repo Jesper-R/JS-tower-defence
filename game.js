@@ -4,14 +4,14 @@ var context = canvas.getContext("2d");
 
 const SW = canvas.width;
 const SH = canvas.height;
-const DartMonkey_BUTTON = document.getElementById("dart-monkey-button");
-const TEST_BUTTON = document.getElementById("catapult-monkey-button");
+const DART_BUTTON = document.getElementById("dart-monkey-button");
+const CATAPULT_BUTTON = document.getElementById("catapult-monkey-button");
 const RESTART_BUTTON = document.getElementById("restart-button");
 const UPGRADE_MONKEY_BUTTON = document.getElementById("upgrade-monkey-button");
 const START_BUTTON = document.getElementById("start-button");
 const TILE_W = 25;
-const swingAudio = document.getElementById("swing-audio");
-const popAudio = document.getElementById("pop-audio");
+const SWING_AUDIO = document.getElementById("swing-audio");
+const POP_AUDIO = document.getElementById("pop-audio");
 const NUM_ENEMIES = 10;
 
 var monkey_img = new Image();
@@ -171,12 +171,12 @@ function infiniteWaves() {
 
 function spawnBalloons(balloons) {
   enemies = [];
-  enemyStart.y = 0;
+  BalloonStart.y = 0;
 
   balloons.forEach((balloon) => {
     for (let i = 0; i < balloon.count; i++) {
       enemies.push(new balloon.type());
-      enemyStart.y -= enemies[enemies.length - 1].spawnOffset;
+      BalloonStart.y -= enemies[enemies.length - 1].spawnOffset;
     }
   });
 }
@@ -229,7 +229,7 @@ class Vector {
     this.y = y;
   }
 }
-var enemyStart = new Vector(125, 0);
+var BalloonStart = new Vector(125, 0);
 var startPos = new Vector(125, 0);
 
 //breaking up pathData so I can update whos in first easily
@@ -262,7 +262,7 @@ var pathData = [
   new Vector(0, 50),
 ];
 
-class Enemy {
+class Balloon {
   constructor(pos, color, r, health, speed) {
     this.pos = pos;
     this.color = color;
@@ -292,7 +292,7 @@ class Enemy {
 
   update() {
     if (this.currentTarget == null) return;
-    //calculates direction enemy has to go
+    //calculates direction Balloon has to go
     let dir = new Vector(
       this.currentTarget.x - this.pos.x,
       this.currentTarget.y - this.pos.y
@@ -324,12 +324,11 @@ class Enemy {
 
     if (599 < this.pos.y) {
       //console.log('delete balloon and remove hp')
-      document.getElementById("lives").innerHTML = `HP: ${(hp -=
-        enemies[enemies.indexOf(this)].health)}`;
+      document.getElementById("lives").innerHTML = `HP: ${(hp -= enemies[enemies.indexOf(this)].health)}`;
       enemies.splice(enemies.indexOf(this), 1);
-      popAudio.volume = 0.5;
-      popAudio.currentTime = 0.235;
-      popAudio.play();
+      POP_AUDIO.volume = 0.5;
+      POP_AUDIO.currentTime = 0.235;
+      POP_AUDIO.play();
 
       if (hp <= 0) {
         document.getElementById("death-screen").style.display = "block";
@@ -370,37 +369,37 @@ class Enemy {
   }
 }
 
-class RedBalloon extends Enemy {
+class RedBalloon extends Balloon {
   constructor(spawnOffset) {
-    super(new Vector(enemyStart.x, enemyStart.y), "red", 2, 1, 1);
+    super(new Vector(BalloonStart.x, BalloonStart.y), "red", 2, 1, 1);
     this.spawnOffset = 30;
   }
 }
 
-class BlueBalloon extends Enemy {
+class BlueBalloon extends Balloon {
   constructor(spawnOffset) {
-    super(new Vector(enemyStart.x, enemyStart.y), "blue", 2, 2, 2);
+    super(new Vector(BalloonStart.x, BalloonStart.y), "blue", 2, 2, 2);
     this.spawnOffset = 60;
   }
 }
 
-class GreenBalloon extends Enemy {
+class GreenBalloon extends Balloon {
   constructor(spawnOffset) {
-    super(new Vector(enemyStart.x, enemyStart.y), "green", 2, 3, 3);
+    super(new Vector(BalloonStart.x, BalloonStart.y), "green", 2, 3, 3);
     this.spawnOffset = 80;
   }
 }
 
-class YellowBalloon extends Enemy {
+class YellowBalloon extends Balloon {
   constructor(spawnOffset) {
-    super(new Vector(enemyStart.x, enemyStart.y), "yellow", 2, 4, 4);
+    super(new Vector(BalloonStart.x, BalloonStart.y), "yellow", 2, 4, 4);
     this.spawnOffset = 50;
   }
 }
 
-class PinkBalloon extends Enemy {
+class PinkBalloon extends Balloon {
   constructor(spawnOffset) {
-    super(new Vector(enemyStart.x, enemyStart.y), "pink", 2, 5, 5);
+    super(new Vector(BalloonStart.x, BalloonStart.y), "pink", 2, 5, 5);
     this.spawnOffset = 100;
   }
 }
@@ -420,14 +419,14 @@ function updateBalloonSpeed(health) {
   }
 }
 
-DartMonkey_BUTTON.addEventListener("click", function (event) {
+DART_BUTTON.addEventListener("click", function (event) {
   if (gold >= 50) {
     //console.log("start placing")
     gold -= 50;
     document.getElementById("gold").innerHTML = `Gold: ${gold}`;
     DartMonkey.placing = true;
-    DartMonkey_BUTTON.style.pointerEvents = "none";
-    TEST_BUTTON.style.pointerEvents = "none";
+    DART_BUTTON.style.pointerEvents = "none";
+    CATAPULT_BUTTON.style.pointerEvents = "none";
     document.getElementById("canvas").style.cursor = "move";
     var newTower = new DartMonkey(
       event.clientX - canvas.getBoundingClientRect().left,
@@ -443,19 +442,6 @@ RESTART_BUTTON.addEventListener("click", function (event) {
   //location.reload();
   restart();
 });
-var elem = document.documentElement;
-
-function openFullscreen() {
-  if (elem.requestFullscreen) {
-    elem.requestFullscreen();
-  } else if (elem.webkitRequestFullscreen) {
-    /* Safari */
-    elem.webkitRequestFullscreen();
-  } else if (elem.msRequestFullscreen) {
-    /* IE11 */
-    elem.msRequestFullscreen();
-  }
-}
 
 function restart() {
   hp = 100;
@@ -478,6 +464,20 @@ function restart() {
   roundStart = true;
   updateUpgradeCost();
   monkey_img.src = "sprites/default-monkeys/dart-monkey.png";
+}
+
+var elem = document.documentElement;
+
+function openFullscreen() {
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) {
+    /* Safari */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) {
+    /* IE11 */
+    elem.msRequestFullscreen();
+  }
 }
 
 START_BUTTON.addEventListener("click", function (event) {
@@ -529,16 +529,14 @@ function handleClick() {
       document.getElementById("canvas").style.cursor = "default";
     }
   }
-  DartMonkey_BUTTON.style.pointerEvents = "all";
-  TEST_BUTTON.style.pointerEvents = "all";
+  DART_BUTTON.style.pointerEvents = "all";
+  CATAPULT_BUTTON.style.pointerEvents = "all";
 }
 
 function isMonkeyOnAnotherMonkey(monkey) {
   towers.forEach((tower) => {
-    var dist = Math.sqrt(
-      (tower.x - selectedTower.x) ** 2 + (tower.y - selectedTower.y) ** 2
-    );
-    console.log(dist);
+    var dist = Math.sqrt((tower.x - selectedTower.x) ** 2 + (tower.y - selectedTower.y) ** 2);
+    //console.log(dist);
 
     if (dist < 25 && towers.length > 1 && dist > 0) {
       selectedTower.rcolor = "red";
@@ -609,38 +607,34 @@ class Monkeys {
     this.monkeyType = monkeyType;
   }
 
-  update2() {
+  updateMonkey() {
     let closestDist = Infinity;
-    let closestEnemy = null;
-    let leadingEnemy = null;
-    let lastEnemyInRange = null;
+    let closestBalloon = null;
+    let leadingBalloon = null;
+    let lastBalloonInRange = null;
 
     for (let i = 0; i < enemies.length; i++) {
-      let dist = Math.sqrt(
-        (enemies[i].pos.x - this.x) ** 2 + (enemies[i].pos.y - this.y) ** 2
-      );
+      let dist = Math.sqrt((enemies[i].pos.x - this.x) ** 2 + (enemies[i].pos.y - this.y) ** 2);
       if (dist < this.range) {
-        leadingEnemy = enemies[i];
+        leadingBalloon = enemies[i];
         break;
       }
     }
 
     for (let i = enemies.length - 1; i >= 0; i--) {
-      let dist = Math.sqrt(
-        (enemies[i].pos.x - this.x) ** 2 + (enemies[i].pos.y - this.y) ** 2
-      );
+      let dist = Math.sqrt((enemies[i].pos.x - this.x) ** 2 + (enemies[i].pos.y - this.y) ** 2);
       if (dist < this.range) {
-        lastEnemyInRange = enemies[i];
+        lastBalloonInRange = enemies[i];
         break;
       }
     }
 
-    // Set the tower's target to the closest enemy within range
+    // Set the tower's target to the closest Balloon within range
     if (this.monkeyType == "dart") {
-      this.target = leadingEnemy;
+      this.target = leadingBalloon;
     }
     if (this.monkeyType == "catapult") {
-      this.target = lastEnemyInRange;
+      this.target = lastBalloonInRange;
     }
 
     // Fire a bullet at the target if the tower is not on cooldown
@@ -657,9 +651,9 @@ class Monkeys {
       );
       //console.log(newBullet)
       bullets.push(newBullet);
-      swingAudio.volume = 0.3;
-      swingAudio.currentTime = 0;
-      swingAudio.play();
+      SWING_AUDIO.volume = 0.3;
+      SWING_AUDIO.currentTime = 0;
+      SWING_AUDIO.play();
 
       if (this.monkeyType == "dart") {
         this.fireCooldown = 60;
@@ -674,18 +668,18 @@ class Monkeys {
     }
   }
 
-  rotateTowardsEnemy(enemy) {
-    // Calculate the vector from the tower to the enemy
-    let dx = enemy.pos.x - this.x;
-    let dy = enemy.pos.y - this.y;
-    // Calculate the angle between the tower and the enemy
+  rotateTowardsBalloon(Balloon) {
+    // Calculate the vector from the tower to the Balloon
+    let dx = Balloon.pos.x - this.x;
+    let dy = Balloon.pos.y - this.y;
+    // Calculate the angle between the tower and the Balloon
     let angle = Math.atan2(dy, dx);
     context.save();
     // Set the origin point to the center of the tower
     context.translate(this.x, this.y);
     //console.log(this.x + " : " + this.y)
 
-    // Rotate the tower towards the enemy
+    // Rotate the tower towards the Balloon
     context.rotate(angle + Math.PI / 2);
     context.drawImage(
       this.image,
@@ -705,7 +699,6 @@ class Monkeys {
     context.save();
     // Set the origin point to the center of the tower
     context.translate(this.x, this.y);
-
     // Rotate the tower towards the point
     context.rotate(angle + Math.PI / 2);
     context.drawImage(
@@ -731,7 +724,7 @@ class DartMonkey extends Monkeys {
     this.isPlaced = false;
   }
   update() {
-    this.update2();
+    this.updateMonkey();
   }
 }
 
@@ -748,7 +741,7 @@ class CatapultMonkey extends Monkeys {
   }
 
   update() {
-    this.update2();
+    this.updateMonkey();
   }
 }
 
@@ -779,9 +772,9 @@ class Bullet {
       }
 
       //console.log("hp" + enemies[i].health);
-      let enemy = enemies[i];
+      let Balloon = enemies[i];
       let dist = Math.sqrt(
-        (enemy.pos.x - this.x) ** 2 + (enemy.pos.y - this.y) ** 2
+        (Balloon.pos.x - this.x) ** 2 + (Balloon.pos.y - this.y) ** 2
       );
       if (dist < 25) {
         //console.log("prethit hp " + enemies[i].health);
@@ -790,24 +783,24 @@ class Bullet {
         // will not do damage to the balloon since it already did damage to it
         // This isnt a problem with the dart monkey because the bullet gets deleted right after a hit
         // also makes so it wont give gold for multiple collissions when spike travels over balloon
-        if (!enemy.hitBy.includes(this) || this.bulletType == "a") {
-          if (enemy.health < this.damage) {
-            gold += 3 * enemy.health;
-            enemy.health -= this.damage;
+        if (!Balloon.hitBy.includes(this) || this.bulletType == "a") {
+          if (Balloon.health < this.damage) {
+            gold += 3 * Balloon.health;
+            Balloon.health -= this.damage;
           } else {
-            enemy.health -= this.damage;
-            enemy.speed = updateBalloonSpeed(enemy.health);
-            enemy.hitBy.push(this);
+            Balloon.health -= this.damage;
+            Balloon.speed = updateBalloonSpeed(Balloon.health);
+            Balloon.hitBy.push(this);
             gold += 3 * this.damage;
           }
         }
 
         //console.log("posthit hp " + enemies[i].health);
-        popAudio.volume = 0.5;
-        popAudio.currentTime = 0.235;
-        popAudio.play();
+        POP_AUDIO.volume = 0.5;
+        POP_AUDIO.currentTime = 0.235;
+        POP_AUDIO.play();
 
-        if (enemy.health <= 0) {
+        if (Balloon.health <= 0) {
           enemies.splice(i, 1);
         }
         updateGold(gold);
@@ -840,10 +833,10 @@ function updateUpgradeCost() {
   }g`;
 }
 
-function calculateDirection(tower, enemy) {
-  // Calculate the vector from the tower to the enemy
-  let dx1 = enemy.pos.x - tower.x;
-  let dy1 = enemy.pos.y - tower.y;
+function calculateDirection(tower, Balloon) {
+  // Calculate the vector from the tower to the Balloon
+  let dx1 = Balloon.pos.x - tower.x;
+  let dy1 = Balloon.pos.y - tower.y;
   //console.log("dx:", dx1, "dy:", dy1);
   // Normalize the vector to get a unit vector
   let length = Math.sqrt(dx1 * dx1 + dy1 * dy1);
@@ -932,18 +925,18 @@ function render() {
   renderGrid();
 
   // Create an array of indices for the enemies array
-  const enemyIndices = enemies.map((enemy, index) => index);
+  const BalloonIndices = enemies.map((Balloon, index) => index);
 
-  // Custom comparison function for sorting the enemy indices by hp
+  // Custom comparison function for sorting the Balloon indices by hp
   const compareIndicesByHP = (index1, index2) => {
     return enemies[index1].health - enemies[index2].health;
   };
 
-  // Sort the enemyIndices array using the custom comparison function
-  enemyIndices.sort(compareIndicesByHP);
+  // Sort the BalloonIndices array using the custom comparison function
+  BalloonIndices.sort(compareIndicesByHP);
 
   // Render enemies in ascending order of HP based on the sorted indices
-  enemyIndices.forEach((index) => {
+  BalloonIndices.forEach((index) => {
     enemies[index].render();
   });
 
@@ -977,7 +970,7 @@ function changeUpgradeColor(color, firstId) {
   upgradePath3.style.stroke = color;
 }
 
-TEST_BUTTON.addEventListener("click", function (event) {
+CATAPULT_BUTTON.addEventListener("click", function (event) {
   if (gold >= 500) {
     gold -= 500;
     document.getElementById("gold").innerHTML = `Gold: ${gold}`;
@@ -1045,14 +1038,14 @@ function updateOrder() {
 }
 function controlButtons() {
   if (started == false) {
-    DartMonkey_BUTTON.disabled = true;
+    DART_BUTTON.disabled = true;
     UPGRADE_MONKEY_BUTTON.disabled = true;
-    TEST_BUTTON.disabled = true;
+    CATAPULT_BUTTON.disabled = true;
     UPGRADE_MONKEY_BUTTON.style.pointerEvents = "none";
   } else {
-    DartMonkey_BUTTON.disabled = false;
+    DART_BUTTON.disabled = false;
     UPGRADE_MONKEY_BUTTON.disabled = false;
-    TEST_BUTTON.disabled = false;
+    CATAPULT_BUTTON.disabled = false;
     UPGRADE_MONKEY_BUTTON.style.pointerEvents = "all";
   }
 }
@@ -1070,7 +1063,7 @@ function play() {
     if (!e.target) {
       if (e.isPlaced) {
         e.update();
-        e.rotateTowardsEnemy(enemies[0]);
+        e.rotateTowardsBalloon(enemies[0]);
       }
     }
 
@@ -1080,9 +1073,9 @@ function play() {
         //console.log("pre rotate")
         //console.log(e.target)
         try {
-          e.rotateTowardsEnemy(e.target);
+          e.rotateTowardsBalloon(e.target);
         } catch {
-          e.rotateTowardsEnemy(enemies[0]);
+          e.rotateTowardsBalloon(enemies[0]);
         }
         //prevents monkey from dissapearing when target is killed
         //console.log("rotate")
@@ -1093,9 +1086,9 @@ function play() {
     return;
   }
   updateOrder();
-  enemies.forEach((enemy) => {
-    //console.log(enemy.pos.x + ";;;" + enemy.pos.y)
-    //console.log(enemy.targets.length)
+  enemies.forEach((Balloon) => {
+    //console.log(Balloon.pos.x + ";;;" + Balloon.pos.y)
+    //console.log(Balloon.targets.length)
   });
 
   if (!enemies[0] && hp > 0) {
