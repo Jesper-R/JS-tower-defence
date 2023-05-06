@@ -263,10 +263,9 @@ var pathData = [
 ];
 
 class Balloon {
-  constructor(pos, color, r, health, speed) {
+  constructor(pos, color, health, speed) {
     this.pos = pos;
     this.color = color;
-    this.r = r;
     this.health = health;
     this.x;
     this.y;
@@ -292,7 +291,7 @@ class Balloon {
 
   update() {
     if (this.currentTarget == null) return;
-    //calculates direction Balloon has to go
+
     let dir = new Vector(
       this.currentTarget.x - this.pos.x,
       this.currentTarget.y - this.pos.y
@@ -371,35 +370,35 @@ class Balloon {
 
 class RedBalloon extends Balloon {
   constructor(spawnOffset) {
-    super(new Vector(BalloonStart.x, BalloonStart.y), "red", 2, 1, 1);
+    super(new Vector(BalloonStart.x, BalloonStart.y), "red", 1, 1);
     this.spawnOffset = 30;
   }
 }
 
 class BlueBalloon extends Balloon {
   constructor(spawnOffset) {
-    super(new Vector(BalloonStart.x, BalloonStart.y), "blue", 2, 2, 2);
+    super(new Vector(BalloonStart.x, BalloonStart.y), "blue", 2, 2);
     this.spawnOffset = 60;
   }
 }
 
 class GreenBalloon extends Balloon {
   constructor(spawnOffset) {
-    super(new Vector(BalloonStart.x, BalloonStart.y), "green", 2, 3, 3);
+    super(new Vector(BalloonStart.x, BalloonStart.y), "green", 3, 3);
     this.spawnOffset = 80;
   }
 }
 
 class YellowBalloon extends Balloon {
   constructor(spawnOffset) {
-    super(new Vector(BalloonStart.x, BalloonStart.y), "yellow", 2, 4, 4);
+    super(new Vector(BalloonStart.x, BalloonStart.y), "yellow", 4, 4);
     this.spawnOffset = 50;
   }
 }
 
 class PinkBalloon extends Balloon {
   constructor(spawnOffset) {
-    super(new Vector(BalloonStart.x, BalloonStart.y), "pink", 2, 5, 5);
+    super(new Vector(BalloonStart.x, BalloonStart.y), "pink", 5, 5);
     this.spawnOffset = 100;
   }
 }
@@ -438,6 +437,63 @@ DART_BUTTON.addEventListener("click", function (event) {
   }
 });
 
+CATAPULT_BUTTON.addEventListener("click", function (event) {
+  if (gold >= 500) {
+    gold -= 500;
+    document.getElementById("gold").innerHTML = `Gold: ${gold}`;
+    CatapultMonkey.placing = true;
+    document.getElementById("canvas").style.cursor = "move";
+    var newCatapult = new CatapultMonkey(
+      event.clientX,
+      event.clientY,
+      150
+    );
+    towers.push(newCatapult);
+    selectedTower = newCatapult;
+  }
+});
+
+UPGRADE_MONKEY_BUTTON.addEventListener("click", function (event) {
+  console.log("level" + dartMonkeyLevel);
+  console.log(canUpgrade);
+
+  if (!canUpgrade) {
+    return;
+  }
+
+  switch (dartMonkeyLevel) {
+    case 1:
+      monkey_img.src = "sprites/upgrades/dart-monkey-upgrade-2.png";
+      break;
+
+    case 2:
+      monkey_img.src = "sprites/upgrades/dart-monkey-upgrade-3.png";
+      break;
+
+    case 3:
+      monkey_img.src = "sprites/upgrades/dart-monkey-upgrade-4.png";
+      break;
+
+    case 4:
+      monkey_img.src = "sprites/upgrades/dart-monkey-upgrade-5.png";
+      document.getElementById("dart-upgrade-cost").innerHTML = "MAX";
+      dartMonkeyLevel += 1;
+      return;
+
+    default:
+      return;
+  }
+  gold -= upgradeCost;
+  dartMonkeyLevel += 1;
+  upgradeCost = 50 * dartMonkeyLevel;
+  document.getElementById("gold").innerHTML = `Gold: ${gold}`;
+  document.getElementById("dart-upgrade-cost").innerHTML = `${
+    50 * dartMonkeyLevel
+  }g`;
+  console.log("gold" + gold);
+  console.log("upgradecost" + upgradeCost);
+});
+
 RESTART_BUTTON.addEventListener("click", function (event) {
   //location.reload();
   restart();
@@ -466,6 +522,15 @@ function restart() {
   monkey_img.src = "sprites/default-monkeys/dart-monkey.png";
 }
 
+START_BUTTON.addEventListener("click", function (event) {
+  started = true;
+  START_BUTTON.style.display = "none";
+  console.log(canvas.clientWidth);
+  if (canvas.clientWidth < 800) {
+    openFullscreen();
+  }
+});
+
 var elem = document.documentElement;
 
 function openFullscreen() {
@@ -480,14 +545,19 @@ function openFullscreen() {
   }
 }
 
-START_BUTTON.addEventListener("click", function (event) {
-  started = true;
-  START_BUTTON.style.display = "none";
-  console.log(canvas.clientWidth);
-  if (canvas.clientWidth < 800) {
-    openFullscreen();
+function controlButtons() {
+  if (started == false) {
+    DART_BUTTON.disabled = true;
+    UPGRADE_MONKEY_BUTTON.disabled = true;
+    CATAPULT_BUTTON.disabled = true;
+    UPGRADE_MONKEY_BUTTON.style.pointerEvents = "none";
+  } else {
+    DART_BUTTON.disabled = false;
+    UPGRADE_MONKEY_BUTTON.disabled = false;
+    CATAPULT_BUTTON.disabled = false;
+    UPGRADE_MONKEY_BUTTON.style.pointerEvents = "all";
   }
-});
+}
 
 canvas.addEventListener("mousemove", function (event) {
   if (DartMonkey.placing || CatapultMonkey.placing) {
@@ -512,9 +582,7 @@ canvas.addEventListener("mousemove", function (event) {
   }
 });
 
-canvas.addEventListener("click", handleClick, true);
-
-function handleClick() {
+canvas.addEventListener("click", function (event) {
   if (DartMonkey.placing) {
     if (!(selectedTower.rcolor == "red")) {
       DartMonkey.placing = false;
@@ -531,14 +599,15 @@ function handleClick() {
   }
   DART_BUTTON.style.pointerEvents = "all";
   CATAPULT_BUTTON.style.pointerEvents = "all";
-}
+});
+
 
 function isMonkeyOnAnotherMonkey(monkey) {
   towers.forEach((tower) => {
     var dist = Math.sqrt((tower.x - selectedTower.x) ** 2 + (tower.y - selectedTower.y) ** 2);
     //console.log(dist);
 
-    if (dist < 25 && towers.length > 1 && dist > 0) {
+    if (dist < 35 && towers.length > 1 && dist > 0) {
       selectedTower.rcolor = "red";
     }
   });
@@ -572,7 +641,7 @@ function isTowerOnPath(tower) {
   }
 }
 
-function drawSelectedTower() {
+function drawSelectedMonkey() {
   if (DartMonkey.placing) {
     DartMonkey.placing = true;
     context.drawImage(
@@ -583,9 +652,6 @@ function drawSelectedTower() {
       64
     );
   }
-}
-
-function drawCatapultMonkeys() {
   if (CatapultMonkey.placing) {
     CatapultMonkey.placing = true;
     context.drawImage(
@@ -803,21 +869,18 @@ class Bullet {
         if (Balloon.health <= 0) {
           enemies.splice(i, 1);
         }
+
         updateGold(gold);
 
-        //return true;
         if (this.bulletType == "a") {
           bullets.splice(bullets.indexOf(this), 1);
         }
 
-        /*if (this.cooldown >= 0) {
-          this.cooldown--;
-        }*/
       }
     }
-    //return false;
   }
 }
+
 function updateGold(gold) {
   document.getElementById("gold").innerHTML = `Gold: ${gold}`;
 }
@@ -848,9 +911,15 @@ function calculateDirection(tower, Balloon) {
   return direction;
 }
 
-function update() {
+function updateBalloons() {
   enemies.forEach(function (e) {
     e.update();
+  });
+}
+
+function updateBullets() {
+  bullets.forEach(function (b) {
+    b.move();
   });
 }
 
@@ -878,8 +947,8 @@ function renderPath() {
     }
 
     if (path.x < 0) {
-      let x = drawPos.x - 25;
-      let y = drawPos.y - 25;
+      let x = drawPos.x - TILE_W;
+      let y = drawPos.y - TILE_W;
       let w = path.x;
       let h = TILE_W * 2;
 
@@ -917,48 +986,76 @@ function renderGrid() {
   context.lineWidth = 1;
 }
 
-function render() {
-  context.fillStyle = bgcolor;
-  context.fillRect(0, 0, SW, SH);
-
-  renderPath();
-  renderGrid();
-
+function getBalloonIndicesByHealth() {
   // Create an array of indices for the enemies array
   const BalloonIndices = enemies.map((Balloon, index) => index);
 
-  // Custom comparison function for sorting the Balloon indices by hp
+  // Comparison function for sorting the Balloon indices by hp
   const compareIndicesByHP = (index1, index2) => {
     return enemies[index1].health - enemies[index2].health;
   };
 
-  // Sort the BalloonIndices array using the custom comparison function
   BalloonIndices.sort(compareIndicesByHP);
 
   // Render enemies in ascending order of HP based on the sorted indices
   BalloonIndices.forEach((index) => {
     enemies[index].render();
   });
+}
 
-  // Draw your towers
-  for (var i = 0; i < towers.length; i++) {
-    context.strokeStyle = towers[i].rcolor;
+function renderMonkeys() {
+  towers.forEach(function (t) {
+    if (!enemies[0] && t.isPlaced) {
+      t.rotateTowardsPoint(startPos.x, startPos.y);
+      return;
+    }
+
+    if (!t.target) {
+      if (t.isPlaced) {
+        t.update();
+        t.rotateTowardsBalloon(enemies[0]);
+      }
+    }
+
+    if (t.target) {
+      if (t.isPlaced) {
+        t.update();
+        //console.log("pre rotate")
+        //console.log(e.target)
+        try {
+          t.rotateTowardsBalloon(t.target);
+        } catch {
+          t.rotateTowardsBalloon(enemies[0]);
+        }
+        //prevents monkey from dissapearing when target is killed
+        //console.log("rotate")
+      }
+    }
+
+    // render tower ranges
+    context.strokeStyle = t.rcolor;
     context.beginPath();
-    context.arc(towers[i].x, towers[i].y, towers[i].range, 0, Math.PI * 2);
+    context.arc(t.x, t.y, t.range, 0, Math.PI * 2);
     context.setLineDash([15, 5]);
     context.lineWidth = 2;
     context.stroke();
     context.lineWidth = 1;
     context.strokeStyle = "black";
+    context.setLineDash([0, 0]);
+  });
 
-    //context.drawImage(monkey_img, towers[i].x -32, towers[i].y-32, 64, 64)
-  }
-  context.setLineDash([0, 0]);
-  // Draw the selected tower
+  // Draw the selected tower if any exist
+  drawSelectedMonkey();
+}
 
-  drawSelectedTower();
+function render() {
+  context.fillStyle = bgcolor;
+  context.fillRect(0, 0, SW, SH);
 
-  drawCatapultMonkeys();
+  renderPath();
+  renderGrid();
+  getBalloonIndicesByHealth();
+  renderMonkeys();
 }
 
 function changeUpgradeColor(color, firstId) {
@@ -970,135 +1067,16 @@ function changeUpgradeColor(color, firstId) {
   upgradePath3.style.stroke = color;
 }
 
-CATAPULT_BUTTON.addEventListener("click", function (event) {
-  if (gold >= 500) {
-    gold -= 500;
-    document.getElementById("gold").innerHTML = `Gold: ${gold}`;
-    CatapultMonkey.placing = true;
-    document.getElementById("canvas").style.cursor = "move";
-    var newCatapult = new CatapultMonkey(
-      event.clientX,
-      event.clientY,
-      150
-    );
-    towers.push(newCatapult);
-    selectedTower = newCatapult;
-  }
-});
-
-UPGRADE_MONKEY_BUTTON.addEventListener("click", function (event) {
-  console.log("level" + dartMonkeyLevel);
-  console.log(canUpgrade);
-
-  if (!canUpgrade) {
-    return;
-  }
-
-  switch (dartMonkeyLevel) {
-    case 1:
-      monkey_img.src = "sprites/upgrades/dart-monkey-upgrade-2.png";
-      break;
-
-    case 2:
-      monkey_img.src = "sprites/upgrades/dart-monkey-upgrade-3.png";
-      break;
-
-    case 3:
-      monkey_img.src = "sprites/upgrades/dart-monkey-upgrade-4.png";
-      break;
-
-    case 4:
-      monkey_img.src = "sprites/upgrades/dart-monkey-upgrade-5.png";
-      document.getElementById("dart-upgrade-cost").innerHTML = "MAX";
-      dartMonkeyLevel += 1;
-      return;
-
-    default:
-      return;
-  }
-  gold -= upgradeCost;
-  dartMonkeyLevel += 1;
-  upgradeCost = 50 * dartMonkeyLevel;
-  document.getElementById("gold").innerHTML = `Gold: ${gold}`;
-  document.getElementById("dart-upgrade-cost").innerHTML = `${
-    50 * dartMonkeyLevel
-  }g`;
-  console.log("gold" + gold);
-  console.log("upgradecost" + upgradeCost);
-});
-
-var test = 0;
-
-shooting = true;
-
-function updateOrder() {
-  enemies.sort(function (a, b) {
-    return a.targets.length - b.targets.length;
-  });
-}
-function controlButtons() {
-  if (started == false) {
-    DART_BUTTON.disabled = true;
-    UPGRADE_MONKEY_BUTTON.disabled = true;
-    CATAPULT_BUTTON.disabled = true;
-    UPGRADE_MONKEY_BUTTON.style.pointerEvents = "none";
-  } else {
-    DART_BUTTON.disabled = false;
-    UPGRADE_MONKEY_BUTTON.disabled = false;
-    CATAPULT_BUTTON.disabled = false;
-    UPGRADE_MONKEY_BUTTON.style.pointerEvents = "all";
-  }
-}
-function play() {
-  controlButtons();
-  render();
-  towers.forEach(function (e) {
-    if (!enemies[0] && e.isPlaced) {
-      //console.log("rotate to point")
-      //console.log(e)
-      e.rotateTowardsPoint(startPos.x, startPos.y);
-      return;
-    }
-
-    if (!e.target) {
-      if (e.isPlaced) {
-        e.update();
-        e.rotateTowardsBalloon(enemies[0]);
-      }
-    }
-
-    if (e.target) {
-      if (e.isPlaced) {
-        e.update();
-        //console.log("pre rotate")
-        //console.log(e.target)
-        try {
-          e.rotateTowardsBalloon(e.target);
-        } catch {
-          e.rotateTowardsBalloon(enemies[0]);
-        }
-        //prevents monkey from dissapearing when target is killed
-        //console.log("rotate")
-      }
-    }
-  });
-  if (!started) {
-    return;
-  }
-  updateOrder();
-  enemies.forEach((Balloon) => {
-    //console.log(Balloon.pos.x + ";;;" + Balloon.pos.y)
-    //console.log(Balloon.targets.length)
-  });
-
+function checkForRoundStart() {
   if (!enemies[0] && hp > 0) {
     roundStart = true;
-
     round += 1;
     document.getElementById("current-round").innerHTML = `Round: ${round}`;
     generateWave();
   }
+}
 
+function checkUpdateButtonColor() {
   if (gold >= upgradeCost) {
     canUpgrade = true;
   } else {
@@ -1109,12 +1087,25 @@ function play() {
   } else {
     changeUpgradeColor("red", 4);
   }
+}
 
-  update();
-
-  bullets.forEach(function (b) {
-    b.move();
+function updateOrder() {
+  enemies.sort(function (a, b) {
+    return a.targets.length - b.targets.length;
   });
+}
+
+function play() {
+  controlButtons();
+  render();
+  
+  if (!started) {return;}
+
+  updateOrder();
+  checkForRoundStart();
+  checkUpdateButtonColor();
+  updateBalloons();
+  updateBullets();
 
   //console.log(bullets.length + "bullet length")
   for (let i = 0; i < bullets.length; i++) {
