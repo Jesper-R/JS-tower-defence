@@ -710,7 +710,7 @@ class Monkeys {
       var newBullet = new Bullet(
         this.x,
         this.y,
-        6,
+        12,
         1,
         direction,
         this.bulletType
@@ -919,8 +919,34 @@ function updateBalloons() {
 
 function updateBullets() {
   bullets.forEach(function (b) {
+    if (b.bulletType == "a") {
+      context.drawImage(
+        bullet_img,
+        b.x - 24,
+        b.y - 24,
+        48,
+        48
+      );
+    } else {
+      context.drawImage(
+        catapult_projectile_img,
+        b.x - 32,
+        b.y - 32,
+        64,
+        64
+      );
+    }
     b.move();
   });
+}
+
+function startMusic() {
+  if (musicStart) {
+    const mainMusic = document.getElementById("main-music");
+    mainMusic.volume = 0.2;
+    mainMusic.play();
+    musicStart = false;
+  }
 }
 
 function renderPath() {
@@ -1106,41 +1132,7 @@ function play() {
   checkUpdateButtonColor();
   updateBalloons();
   updateBullets();
-
-  //console.log(bullets.length + "bullet length")
-  for (let i = 0; i < bullets.length; i++) {
-    //console.log(bullets[i].bulletType)
-    if (bullets[i].bulletType == "a") {
-      context.drawImage(
-        bullet_img,
-        bullets[i].x - 24,
-        bullets[i].y - 24,
-        48,
-        48
-      );
-    } else {
-      context.drawImage(
-        catapult_projectile_img,
-        bullets[i].x - 32,
-        bullets[i].y - 32,
-        64,
-        64
-      );
-    }
-
-    bullets[i].move();
-  }
-
-  if (musicStart) {
-    const mainMusic = document.getElementById("main-music");
-    mainMusic.volume = 0.2;
-    mainMusic.play();
-    musicStart = false;
-  }
-
-  if (gold < 50) {
-    changeUpgradeColor("red", 4);
-  }
+  startMusic();
 }
 
 setInterval(play, 1000 / 120);
