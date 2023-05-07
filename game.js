@@ -695,7 +695,7 @@ class Monkeys {
       }
     }
 
-    // Set the tower's target to the closest Balloon within range
+    // Set the towers target 
     if (this.monkeyType == "dart") {
       this.target = leadingBalloon;
     }
