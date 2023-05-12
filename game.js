@@ -1135,4 +1135,4 @@ function play() {
   startMusic();
 }
 
-setInterval(play, 1000 / 120);
+setInterval(play, 1000 / 60);
